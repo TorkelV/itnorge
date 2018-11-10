@@ -2,7 +2,8 @@
   (:require [compojure.core :refer :all]
             [clojure.data.json :as json]
             [clojure.string :as cstr]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [clojure.java.io :as io]))
 
 ;;clojure.walk/keywordize-keys
 (defn keywordize-keys [m]
@@ -10,7 +11,7 @@
     (clojure.walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
 (defn rj [f]
-  (keywordize-keys(json/read-str (slurp (str "resources/db/" f)))))
+  (keywordize-keys(json/read-str (slurp (io/file (io/resource (str "db/" f)))))))
 
 
 (def KEYWORDS (rj "keywords"))
