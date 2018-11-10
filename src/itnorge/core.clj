@@ -11,7 +11,7 @@
     (clojure.walk/postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
 (defn rj [f]
-  (keywordize-keys(json/read-str (slurp (io/file (io/resource (str "db/" f)))))))
+  (keywordize-keys(json/read-str (slurp (io/input-stream (io/resource (str "db/" f)))))))
 
 
 (def KEYWORDS (rj "keywords"))
