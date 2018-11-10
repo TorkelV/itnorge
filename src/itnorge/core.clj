@@ -18,6 +18,7 @@
 
 (def KEYWORDS (rj "keywords"))
 (def BUSINESSES (rj "businesses"))
+(def KEYWORDSPLAIN (rj "keywordsplain"))
 
 (defn keywords [ks]
   (if (empty? ks) KEYWORDS
@@ -26,6 +27,8 @@
 (defn businesses [orgnumbers]
   (if (empty? orgnumbers) BUSINESSES
                           (filter (fn [v] (some #(= (:business_orgnr v) %) orgnumbers)) BUSINESSES)))
+
+
 
 (defn split-params [s]
   (cstr/split s #"!"))
@@ -40,6 +43,10 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str (keywords (split-params ks)))})
+           (GET "/keywordsplain/" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str KEYWORDSPLAIN)})
            (GET "/" []
              (resp/content-type (resp/resource-response "index.html" {:root "public"}) "text/html"))
            (route/resources "/")
