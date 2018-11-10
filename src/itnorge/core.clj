@@ -38,7 +38,8 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str (keywords (split-params ks)))})
-           (route/not-found "<h1>Page not found</h1>"))
+           (route/not-found "<h1>Page not found</h1>")
+           (route/resources "/"))
 
 
 
