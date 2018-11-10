@@ -28,18 +28,29 @@
   (if (empty? orgnumbers) BUSINESSES
                           (filter (fn [v] (some #(= (:business_orgnr v) %) orgnumbers)) BUSINESSES)))
 
-
-(defn line-chart-data-keywords [data]
+(defn line-chart-data-keywords [data k]
   (->> data
        (map (fn [v] (assoc '{} :name (name (first v)) :data (last v))))
-       (map (fn [v] (update v :data (fn [c] (map #(assoc '{} (:year %) (:precent %)) c)))))
-       (map (fn [v] (update v :data #(into {} %))))))
-
-(defn line-chart-data-keywords-all [data]
-  (->> data
-       (map (fn [v] (assoc '{} :name (name (first v)) :data (last v))))
-       (map (fn [v] (update v :data (fn [c] (map #(assoc '{} (:year %) (:precent_all %)) c)))))
-       (map (fn [v] (update v :data #(into {} %))))))
+       (map (fn [v] (update v :data (fn [c] (map #(assoc '{} (:year %) (k %)) c)))))
+       (map (fn [v] (update v :data #(into {} %))))
+       (map (fn [v] (update v :data #(merge '{"2018" 0
+                                              "2017" 0
+                                              "2016" 0
+                                              "2015" 0
+                                              "2014" 0
+                                              "2013" 0
+                                              "2012" 0
+                                              "2011" 0
+                                              "2010" 0
+                                              "2009" 0
+                                              "2008" 0
+                                              "2007" 0
+                                              "2006" 0
+                                              "2005" 0
+                                              "2004" 0
+                                              "2003" 0
+                                              "2002" 0} %))))
+       ))
 
 
 (defn split-params [s]
@@ -59,14 +70,14 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str KEYWORDSPLAIN)})
-           (GET "/linechart-keywords-all/:ks" [ks :as req]
+           (GET "/linechart-keywords-percent-all/:ks" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
-              :body    (json/write-str (line-chart-data-keywords-all (keywords (split-params ks))))})
-           (GET "/linechart-keywords/:ks" [ks :as req]
+              :body    (json/write-str (line-chart-data-keywords (keywords (split-params ks)) :precent_all))})
+           (GET "/linechart-keywords-percent/:ks" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
-              :body    (json/write-str (line-chart-data-keywords (keywords (split-params ks))))})
+              :body    (json/write-str (line-chart-data-keywords (keywords (split-params ks)) :precent))})
            (GET "/" []
              (resp/content-type (resp/resource-response "index.html" {:root "public"}) "text/html"))
            (route/resources "/")

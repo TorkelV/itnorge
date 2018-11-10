@@ -17,7 +17,7 @@
     <div v-for="k in keywordsPlain" class="item">
         <label>{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
     </div>
-    <line-chart :data="lineChartKeywords"></line-chart>
+    <line-chart height="600px" :data="lineChartKeywords"></line-chart>
 </div>
 <script src="/js/index.js"></script>
 </body>

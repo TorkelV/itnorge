@@ -3,11 +3,11 @@ async function getKeywords(){
 }
 
 async function getLineChartKeywords(keys){
-    return await $.get(`/linechart-keywords/!${keys}`);
+    return await $.get(`/linechart-keywords-percent/!${keys}`);
 }
 
 async function getLineChartKeywordsAll(keys){
-    return await $.get(`/linechart-keywords-all/!${keys}`);
+    return await $.get(`/linechart-keywords-percent-all/!${keys}`);
 }
 
 
