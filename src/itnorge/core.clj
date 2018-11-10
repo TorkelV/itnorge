@@ -31,7 +31,7 @@
   (cstr/split s #"!"))
 
 
-(defroutes app-routes
+(defroutes app
            (GET "/businesses/:orgnumbers" [orgnumbers :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
@@ -45,8 +45,6 @@
            (route/resources "/")
            (route/not-found "<h1>Page not found</h1>"))
 
-(def app
-  (wrap-defaults app-routes site-defaults))
 
 
 
