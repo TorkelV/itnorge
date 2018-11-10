@@ -4,7 +4,8 @@
             [clojure.string :as cstr]
             [compojure.route :as route]
             [clojure.java.io :as io]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.util.response :as resp]))
 
 ;;clojure.walk/keywordize-keys
 (defn keywordize-keys [m]
@@ -39,8 +40,10 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str (keywords (split-params ks)))})
-           (route/not-found (io/resource "public/index.html"))
-           (route/resources "/"))
+           (GET "/" []
+             (resp/content-type (resp/resource-response "index.html" {:root "public"}) "text/html"))
+           (route/resources "/")
+           (route/not-found "<h1>Page not found</h1>"))
 
 (def app
   (wrap-defaults app-routes site-defaults))
