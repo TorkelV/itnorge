@@ -29,6 +29,18 @@
                           (filter (fn [v] (some #(= (:business_orgnr v) %) orgnumbers)) BUSINESSES)))
 
 
+(defn line-chart-data-keywords [data]
+  (->> data
+       (map (fn [v] (assoc '{} :name (name (first v)) :data (last v))))
+       (map (fn [v] (update v :data (fn [c] (map #(assoc '{} (:year %) (:precent %)) c)))))
+       (map (fn [v] (update v :data #(into {} %))))))
+
+(defn line-chart-data-keywords-all [data]
+  (->> data
+       (map (fn [v] (assoc '{} :name (name (first v)) :data (last v))))
+       (map (fn [v] (update v :data (fn [c] (map #(assoc '{} (:year %) (:precent_all %)) c)))))
+       (map (fn [v] (update v :data #(into {} %))))))
+
 
 (defn split-params [s]
   (cstr/split s #"!"))
@@ -47,6 +59,14 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str KEYWORDSPLAIN)})
+           (GET "/linechart-keywords-all/:ks" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str (line-chart-data-keywords-all (keywords (split-params ks))))})
+           (GET "/linechart-keywords/:ks" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str (line-chart-data-keywords (keywords (split-params ks))))})
            (GET "/" []
              (resp/content-type (resp/resource-response "index.html" {:root "public"}) "text/html"))
            (route/resources "/")

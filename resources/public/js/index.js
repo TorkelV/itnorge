@@ -2,27 +2,39 @@ async function getKeywords(){
     return await $.get(`/keywordsplain/`);
 }
 
-async function getKeywordStats(){
-    return await $.get(`/keywords/!`);
+async function getLineChartKeywords(keys){
+    return await $.get(`/linechart-keywords/!${keys}`);
+}
+
+async function getLineChartKeywordsAll(keys){
+    return await $.get(`/linechart-keywords-all/!${keys}`);
+}
+
+
+async function getKeywordStats(keys){
+    return await $.get(`/keywords/!${keys}`);
 }
 
 
 var app = new Vue({
     el: '#app',
     data: {
-
+        selectedKeys: [],
+        allAds: false
     },
     computed: {
-        mountainid () {
-            return jQuery.url().param("mountainid");
-        }
+
     },
     asyncComputed: {
         keywordStats () {
-            return getKeywordStats().then(e=>e);
+            return getKeywordStats(this.selectedKeys.join("!")).then(e=>e);
         },
         keywordsPlain () {
             return getKeywords().then(e=>e);
+        },
+        lineChartKeywords () {
+            let fn = this.allAds ? getLineChartKeywordsAll : getLineChartKeywords;
+            return fn(this.selectedKeys.join("!")).then(e=>e)
         }
     },
     watch: {
