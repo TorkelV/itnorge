@@ -2,25 +2,35 @@ async function getKeywords(){
     return await $.get(`/keywordsplain/`);
 }
 
-async function getLineChartKeywords(keys){
-    return await $.get(`/linechart-keywords-percent/!${keys}`);
-}
-
-async function getLineChartKeywordsAll(keys){
-    return await $.get(`/linechart-keywords-percent-all/!${keys}`);
+async function getLineChartKeywords(val,keys,all){
+    console.log(`/linechart-keywords/${val}/!${keys}/${all}/`)
+    return await $.get(`/linechart-keywords/${val}/!${keys}/${all}/`);
 }
 
 
 async function getKeywordStats(keys){
     return await $.get(`/keywords/!${keys}`);
 }
-
+Vue.component('v-select', VueSelect.VueSelect);
 
 var app = new Vue({
     el: '#app',
     data: {
         selectedKeys: ['Java','SQL'],
-        allAds: false
+        lineChartOptions: {
+            onlyKeyedAds: {label: "Kun annonser med nøkkelord", value: true},
+            selectedDataset: {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
+            dataset: [
+                {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
+                {label: "Antall", value: "freq", axisTitle: "Antall", suffix: ""}
+            ]
+        },
+        translations: {
+            lineChartOptions: {
+                onlyKeyedAds: "Kun annonser med nøkkelord"
+            }
+}
+
     },
     computed: {
 
@@ -33,13 +43,14 @@ var app = new Vue({
             return getKeywords().then(e=>e);
         },
         lineChartKeywords () {
-            let fn = this.allAds ? getLineChartKeywordsAll : getLineChartKeywords;
-            return fn(this.selectedKeys.join("!")).then(e=>e)
+            return getLineChartKeywords(this.lineChartOptions.selectedDataset.value,
+                this.selectedKeys.join("!"),
+                !this.onlyKeyedAds
+            ).then(e=>e)
         }
     },
     watch: {
-        uploaded: function(uploaded){
-        }
+
     },
     methods: {
         location (mountainid) {
