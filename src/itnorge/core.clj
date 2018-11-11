@@ -16,9 +16,9 @@
   (keywordize-keys (json/read-str (slurp (io/input-stream (io/resource (str "db/" f)))))))
 
 
-(def KEYWORDS (rj "keywords"))
+(def KEYWORDS  (rj "keywords"))
 (def BUSINESSES (rj "businesses"))
-(def KEYWORDSPLAIN (rj "keywordsplain"))
+(def KEYWORDSPLAIN (sort-by cstr/lower-case(rj "keywordsplain")))
 
 (defn keywords [ks]
   (if (empty? ks) KEYWORDS
@@ -50,6 +50,7 @@
                                               "2004" 0
                                               "2003" 0
                                               "2002" 0} %))))
+       (sort-by #(cstr/lower-case (:name %)))
        ))
 
 

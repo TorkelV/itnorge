@@ -19,7 +19,7 @@ async function getKeywordStats(keys){
 var app = new Vue({
     el: '#app',
     data: {
-        selectedKeys: [],
+        selectedKeys: ['Java','SQL'],
         allAds: false
     },
     computed: {

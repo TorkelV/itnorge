@@ -1,3 +1,36 @@
-p {
-    color: red;
+.keyword {
+    display: inline-block;
+    margin: 3px;
+    padding: 5px 10px 5px 10px;
+    border-radius: 25px;
+    color: #FFF;
+}
+
+.not-selected-keyword{
+    background-color: #0074D9;
+}
+
+.selected-keyword{
+    background-color: #2ECC40 ;
+}
+
+.keyword input[type='checkbox']{
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+
+.selected-keyword:after{
+    content: url(/img/crossgreen.svg);
+    margin-left: 5px;
+    display: inline-block;
+    height:10px;
+    width:10px;
+}
+
+.not-selected-keyword:after{
+    content: url(/img/crossblue.svg);
+    margin-left: 5px;
+    display: inline-block;
+    height:10px;
+    width:10px;
 }

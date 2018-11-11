@@ -12,12 +12,20 @@
     <script src="/js/index.js"></script>
 </head>
 <body>
-<p>Hello World!</p>
 <div id="app">
-    <div v-for="k in keywordsPlain" class="item">
-        <label>{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+    <div class="keyword-group not-selected-keywords">
+        <h3>Keywords</h3>
+        <div v-if="!selectedKeys.includes(k)" class="keyword not-selected-keyword" v-for="k in keywordsPlain" class="item">
+            <label>{{k}}<input  type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+        </div>
     </div>
-    <line-chart height="600px" :data="lineChartKeywords"></line-chart>
+    <div class="keyword-group selected-keywords">
+        <h3>Selected</h3>
+        <div class="keyword selected-keyword"  v-for="k in selectedKeys">
+            <label>{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+        </div>
+    </div>
+    <line-chart xtitle="Year" ytitle="Percentage" height="600px" :data="lineChartKeywords"></line-chart>
 </div>
 <script src="/js/index.js"></script>
 </body>
