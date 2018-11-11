@@ -3,7 +3,7 @@ async function getKeywords(){
 }
 
 async function getLineChartKeywords(val,keys,all){
-    console.log(`/linechart-keywords/${val}/!${keys}/${all}/`)
+    console.log(`/linechart-keywords/${val}/!${keys}/${all}/`);
     return await $.get(`/linechart-keywords/${val}/!${keys}/${all}/`);
 }
 
@@ -12,24 +12,24 @@ async function getKeywordStats(keys){
     return await $.get(`/keywords/!${keys}`);
 }
 Vue.component('v-select', VueSelect.VueSelect);
+Vue.use(VTooltip)
 
 var app = new Vue({
     el: '#app',
     data: {
-        selectedKeys: ['Java','SQL'],
+        searchKeywords: '',
+        selectedKeys: ['Java', 'SQL'],
         lineChartOptions: {
-            onlyKeyedAds: {label: "Kun annonser med nøkkelord", value: true},
+            library: {scales: {yAxes: [{ticks: {maxTicksLimit: 20}}]}},
+            onlyKeyedAds: {label: "Kun annonser med nøkkelord", value: true, tooltip: `Velg å kun ta med stillinger som inneholder minst en teknologi. <br> Noen stillingsannonser er veldig generell og inneholder ikke teknologier. <br> Datasettet kan inneholde noen ingeniør-stillinger som ikke er it-relatert.`},
             selectedDataset: {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
             dataset: [
                 {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
                 {label: "Antall", value: "freq", axisTitle: "Antall", suffix: ""}
             ]
-        },
-        translations: {
-            lineChartOptions: {
-                onlyKeyedAds: "Kun annonser med nøkkelord"
-            }
-}
+        }
+    },
+    components: {
 
     },
     computed: {
@@ -45,7 +45,7 @@ var app = new Vue({
         lineChartKeywords () {
             return getLineChartKeywords(this.lineChartOptions.selectedDataset.value,
                 this.selectedKeys.join("!"),
-                !this.onlyKeyedAds
+                !this.lineChartOptions.onlyKeyedAds.value
             ).then(e=>e)
         }
     },
