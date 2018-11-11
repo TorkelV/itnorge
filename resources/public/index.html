@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>IT Norge</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/popover.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
@@ -17,8 +18,8 @@
 <div id="app">
     <div class="keyword-group not-selected-keywords">
         <h3>Teknologier</h3>
-        <div class="search"><input type="text" v-model="searchKeywords"></div>
-        <div v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))" class="w3-animate-right keyword not-selected-keyword" v-for="k in keywordsPlain" class="item">
+        <div  class="search"><input v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
+        <div v-for="k in keywordsPlain" v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))" class="w3-animate-right keyword not-selected-keyword" class="item">
             <label class="unselectable">{{k}}<input  type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
     </div>

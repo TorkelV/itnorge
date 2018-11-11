@@ -53,11 +53,8 @@ var app = new Vue({
 
     },
     methods: {
-        location (mountainid) {
-            location.href="guestbook.html?mountainid="+mountainid
-        },
-        locationLeaders (mountainid){
-            location.href="leaders.html?mountainid="+mountainid
+        addKeywords () {
+            this.selectedKeys = this.selectedKeys.concat(this.keywordsPlain.filter(k=>!this.selectedKeys.includes(k) && (this.searchKeywords==='' || k.toLowerCase().includes(this.searchKeywords.toLowerCase()))))
         }
     }
 })
