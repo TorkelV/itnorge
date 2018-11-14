@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="pop-box keyword-group selected-keywords">
-        <button v-on:click="clearKeywords">Clear all</button>
+        <button class="clear-button" v-on:click="clearKeywords">Clear all</button>
         <div class="w3-animate-right keyword selected-keyword"  v-for="k in selectedKeys">
             <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
