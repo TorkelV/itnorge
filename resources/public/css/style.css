@@ -10,6 +10,23 @@
     color: #FFF;
 }
 
+
+.pop-box{
+    box-shadow: 1px 3px 13px 1.5px rgba(0,0,0,0.3);
+}
+
+.search input{
+    outline: none;
+    background-color: #F8F8F8;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 25px;
+}
+
+.keyword:hover{
+    transform: scale(1.05);
+}
+
 .not-selected-keyword{
     background-color: #0074D9;
 }
