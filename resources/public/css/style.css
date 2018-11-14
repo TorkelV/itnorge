@@ -15,6 +15,17 @@
     color: #FFF;
 }
 
+.clear-button {
+    background-color: #FF4136;
+    border: none;
+    display: inline-block;
+    margin: 3px;
+    padding: 7px 10px 5px 10px;
+    box-shadow: 1px 3px 2.51px rgba(0,0,0,0.3);
+    border-radius: 3px;
+    color: #FFF;
+}
+
 .v-select .dropdown-toggle .clear {
     visibility: hidden;
 }
@@ -33,7 +44,7 @@
     border-radius: 25px;
 }
 
-.keyword:hover{
+.keyword:hover, .clear-button:hover{
     transform: scale(1.05);
 }
 
