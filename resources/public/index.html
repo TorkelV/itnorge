@@ -18,20 +18,18 @@
 <div id="app">
 
     <div class="pop-box keyword-group not-selected-keywords">
-        <h3>Teknologier</h3>
-        <div  class="search"><input v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
+        <div  class="search"><input placeholder="Search" v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
         <div v-for="k in keywordsPlain" v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))" class="w3-animate-right keyword not-selected-keyword" class="item">
             <label class="unselectable">{{k}}<input  type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
     </div>
     <div class="pop-box keyword-group selected-keywords">
-        <h3>Valgte</h3>
+        <button v-on:click="clearKeywords">Clear all</button>
         <div class="w3-animate-right keyword selected-keyword"  v-for="k in selectedKeys">
             <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
     </div>
     <div class="pop-box linechart-options">
-        <h3>Filter</h3>
         <label v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
         <v-select v-model="lineChartOptions.selectedDataset" :label="lineChartOptions.dataset.label" :options="lineChartOptions.dataset"></v-select>
     </div>

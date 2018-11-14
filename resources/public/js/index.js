@@ -53,6 +53,9 @@ var app = new Vue({
 
     },
     methods: {
+        clearKeywords () {
+            this.selectedKeys = [];
+        },
         addKeywords () {
             this.selectedKeys = this.selectedKeys.concat(this.keywordsPlain.filter(k=>!this.selectedKeys.includes(k) && (this.searchKeywords==='' || k.toLowerCase().includes(this.searchKeywords.toLowerCase()))))
         }
