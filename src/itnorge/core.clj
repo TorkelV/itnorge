@@ -18,17 +18,34 @@
   (keywordize-keys (json/read-str (slurp (io/input-stream (io/resource (str "db/" f)))))))
 
 
-(def KEYWORDS  (rj "keywords"))
+(def KEYWORDS (rj "keywords"))
 (def BUSINESSES (rj "businesses"))
-(def KEYWORDSPLAIN (sort-by cstr/lower-case(rj "keywordsplain")))
+(def KEYWORDSPLAIN (sort-by cstr/lower-case (rj "keywordsplain")))
 
 (defn keywords [ks]
   (if (empty? ks) KEYWORDS
                   (select-keys KEYWORDS (map keyword ks))))
 
-(defn businesses [orgnumbers]
-  (if (empty? orgnumbers) BUSINESSES
-                          (filter (fn [v] (some #(= (:business_orgnr v) %) orgnumbers)) BUSINESSES)))
+(defn max-posted []
+  (apply max (map :ads_posted BUSINESSES)))
+
+(defn filter-business [b ks search posted-l posted-m]
+  (and
+    (or (empty? ks) (every? (fn [k] (some #(= k %) (:keywords b))) ks))
+    (or
+      (= search "!")
+      (some #(cstr/includes? % search) (:business_names b))
+      (some #(cstr/includes? % search) (:daughter_companies b))
+      (cstr/includes? (:business_orgnr b) search)
+      (some #(cstr/includes? % search) (:daughter_companies b))
+      )
+    (<= posted-l (:ads_posted b))
+    (or (zero? posted-m) (>= posted-m (:ads_posted b)))
+    )
+  )
+
+(defn businesses [ks search posted-l posted-m to-take to-drop]
+  (drop to-drop (take to-take (filter #(filter-business % ks search posted-l posted-m) BUSINESSES))))
 
 
 
@@ -47,10 +64,21 @@
 
 
 (defroutes app
-           (GET "/businesses/:orgnumbers" [orgnumbers :as req]
+           (GET "/businesses/:keywords/:search/:posted-l/:posted-m/:to-take/:to-drop" [keywords search posted-l posted-m to-take to-drop :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
-              :body    (json/write-str (businesses (split-params orgnumbers)))})
+              :body    (json/write-str
+                         (businesses
+                           (split-params keywords)
+                           search
+                           (Integer/parseInt posted-l)
+                           (Integer/parseInt posted-m)
+                           (Integer/parseInt to-take)
+                           (Integer/parseInt to-drop)))})
+           (GET "/maxposted/" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str (max-posted))})
            (GET "/keywords/:ks" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
@@ -63,7 +91,7 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str (line-chart-data-keywords (keywords (split-params ks)) (cond
-                                                                                                (= val "percent") (if (read-string all) :percent_all :percent)
+                                                                                                (= val "percent") (if (= "true" all) :percent_all :percent)
                                                                                                 (= val "freq") :freq
                                                                                                 :else :percent)))})
            (GET "/linechart-keywords-freq/:ks/" [ks]
