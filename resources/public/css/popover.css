@@ -8,7 +8,7 @@
     color: white;
     border: none;
     border-radius: 16px;
-    background-color: #0074D9 !important;
+    background-color: #45494A !important;
     padding: 5px 10px 4px;
 }
 
@@ -18,7 +18,7 @@
     border-style: solid;
     position: absolute;
     margin: 5px;
-    border-color: #0074D9;
+    border-color: #45494A;
     z-index: 1;
 }
 

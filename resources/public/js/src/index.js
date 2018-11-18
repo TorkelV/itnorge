@@ -1,3 +1,18 @@
+import regeneratorRuntime from "regenerator-runtime";
+import "regenerator-runtime/runtime";
+import $ from "jquery";
+import VueChartkick from 'vue-chartkick'
+import Vue from 'vue'
+import Chart from 'chart.js'
+import vSelect from 'vue-select'
+import VTooltip from 'v-tooltip'
+import AsyncComputed from 'vue-async-computed'
+
+Vue.use(AsyncComputed);
+Vue.use(VTooltip);
+Vue.component('v-select', vSelect);
+Vue.use(VueChartkick);
+
 async function getKeywords() {
     return await $.get(`/keywordsplain/`);
 }
@@ -20,21 +35,11 @@ async function getBusinesses(keywords, search, postedMin, postedMax, take, drop)
     return await $.get(`/businesses/!${keywords}/${search}/${postedMin}/${postedMax}/${take}/${drop}`);
 }
 
-Vue.component('v-select', VueSelect.VueSelect);
-Vue.use(VTooltip);
+
 
 var app = new Vue({
     el: '#app',
     data: {
-        bp: {
-            loaded: [],
-            keywords: [],
-            postedMin: 0,
-            postedMax: 0,
-            toTake: 25,
-            search: ""
-        },
-        onBottomOfPage: false,
         searchKeywords: '',
         selectedKeys: ['Java', 'SQL'],
         loadedKeywords: [],
@@ -45,7 +50,9 @@ var app = new Vue({
                 value: true,
                 tooltip: `Velg å kun ta med stillinger som inneholder minst en teknologi. <br> Noen stillingsannonser er veldig generell og inneholder ikke teknologier. <br> Datasettet kan inneholde noen ingeniør-stillinger som ikke er it-relatert.`
             },
-            selectedDataset: {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
+            get selectedDataset() {
+                return this.dataset[0]
+            },
             dataset: [
                 {label: "Prosent", value: "percent", axisTitle: "Prosent", suffix: "%"},
                 {label: "Antall", value: "freq", axisTitle: "Antall", suffix: ""}
@@ -68,26 +75,8 @@ var app = new Vue({
         }
 
     },
-    watch: {
-        onBottomOfPage(onBottomOfPage) {
-            if (onBottomOfPage) {
-                this.updateBusinesses();
-            }
-        }
-    },
+    watch: {},
     methods: {
-        updateBusinesses() {
-            getBusinesses(this.bp.keywords.join("!"),
-                    this.bp.search,
-                    this.bp.postedMin,
-                    this.bp.postedMax,
-                    this.bp.loaded.length + this.bp.toTake,
-                    this.bp.loaded.length
-                ).then(e => this.bp.loaded = [].concat(this.bp.loaded).concat(e));
-        },
-        setMaxPosted() {
-          getMaxPosted().then(e=> this.bp.postedMax = e);
-        },
         clearKeywords() {
             this.selectedKeys = [];
             this.searchKeywords = '';
@@ -95,19 +84,5 @@ var app = new Vue({
         addKeywords() {
             this.selectedKeys = this.selectedKeys.concat(this.keywordsPlain.filter(k => !this.selectedKeys.includes(k) && (this.searchKeywords === '' || k.toLowerCase().includes(this.searchKeywords.toLowerCase()))))
         },
-        bottomVisible() {
-            const scrollY = window.scrollY;
-            const visible = document.documentElement.clientHeight;
-            const pageHeight = document.documentElement.scrollHeight;
-            const bottomOfPage = visible + scrollY >= pageHeight;
-            return bottomOfPage || pageHeight < visible;
-        }
-    },
-    created() {
-        this.updateBusinesses();
-        this.setMaxPosted();
-        window.addEventListener('scroll', () => {
-            this.onBottomOfPage = this.bottomVisible();
-        });
     }
 });

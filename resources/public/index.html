@@ -5,38 +5,30 @@
     <title>IT Norge</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/popover.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
-    <script src="https://unpkg.com/v-tooltip"></script>
-    <script src="https://unpkg.com/vue-select@latest"></script>
-    <script src="https://unpkg.com/vue-chartkick@0.5.0"></script>
-    <script src="https://unpkg.com/vue-async-computed@3.4.1"></script>
-    <script src="/js/index.js"></script>
 </head>
 <body>
 <div id="app">
 
     <div class="pop-box keyword-group not-selected-keywords">
-        <div  class="search"><input placeholder="Søk" v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
+        <div class="search"><input placeholder="Søk" v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
         <div v-for="k in keywordsPlain" v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))" class="w3-animate-right keyword not-selected-keyword" class="item">
             <label class="unselectable">{{k}}<input  type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
     </div>
-    <div class="pop-box keyword-group selected-keywords">
+    <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
         <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
         <div class="w3-animate-right keyword selected-keyword"  v-for="k in selectedKeys">
             <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
         </div>
     </div>
     <div class="pop-box linechart-options">
-        <label v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
+        <label v-on:change="loadedKeywords=[]" v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
         <v-select v-model="lineChartOptions.selectedDataset" :label="lineChartOptions.dataset.label" :options="lineChartOptions.dataset"></v-select>
     </div>
     <div class="pop-box">
     <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix" xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px" :data="lineChartKeywords"></line-chart>
     </div>
 </div>
-<script src="/js/index.js"></script>
+<script src="/js/dist/main.js"></script>
 </body>
 </html>

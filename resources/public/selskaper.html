@@ -12,19 +12,24 @@
     <script src="https://unpkg.com/vue-select@latest"></script>
     <script src="https://unpkg.com/vue-chartkick@0.5.0"></script>
     <script src="https://unpkg.com/vue-async-computed@3.4.1"></script>
-    <script src="/js/index.js"></script>
 </head>
 <body>
 <div id="app">
+    <div class="pop-box">
+       <div class="search">
+           <input class="search" placeholder="Søk i bedrifter" type="text">
+           <input v-model="" type="range" min="1" max="10000">
+       </div>
 
-        <div class="pop-box"  v-for="b in bp.loaded">
-            <div>
-                <p v-for="name in b.business_names">{{name}}</p>
-            </div>
-            <p>Antall stillingannonser: {{b.ads_posted}}</p>
-            <p v-for="k in b.keywords">{{k}}</p>
+    </div>
+    <div class="pop-box" v-for="b in bp.loaded">
+        <div>
+            <p v-for="name in b.business_names">{{name}}</p>
         </div>
+        <p>Antall stillingannonser: {{b.ads_posted}}</p>
+        <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+    </div>
 </div>
-<script src="/js/index.js"></script>
+<script src="/js/selskaper.js"></script>
 </body>
 </html>

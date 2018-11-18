@@ -12,3 +12,4 @@ pom.xml.asc
 .idea/*
 resources/ads
 resources/texts
+node_modules/
