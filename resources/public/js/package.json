@@ -25,7 +25,8 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "build": "webpack"
+    "build-dev": "webpack --env dev --mode development",
+	"build-prod": "webpack"
   },
   "author": "",
   "license": "ISC"

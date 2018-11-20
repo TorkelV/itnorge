@@ -8,25 +8,55 @@
 </head>
 <body>
 <div id="app">
+    <button v-on:click="initFront()">Front</button>
+    <button v-on:click="initBusinesses()">Selskaper</button>
+    <div v-if="page=='front'">
 
-    <div class="pop-box keyword-group not-selected-keywords">
-        <div class="search"><input placeholder="Søk" v-on:keyup.enter="addKeywords" type="text" v-model="searchKeywords"></div>
-        <div v-for="k in keywordsPlain" v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))" class="w3-animate-right keyword not-selected-keyword" class="item">
-            <label class="unselectable">{{k}}<input  type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+
+        <div class="pop-box keyword-group not-selected-keywords">
+            <div class="search"><input placeholder="Søk" v-on:keyup.enter="addKeywords" type="text"
+                                       v-model="searchKeywords"></div>
+            <div v-for="k in keywordsPlain"
+                 v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                 class="w3-animate-right keyword not-selected-keyword item">
+                <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+            </div>
+        </div>
+        <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
+            <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
+            <div class="w3-animate-right keyword selected-keyword" v-for="k in selectedKeys">
+                <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+            </div>
+        </div>
+        <div class="pop-box linechart-options">
+            <label v-on:change="loadedKeywords=[]" v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input
+                    type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
+            <v-select v-model="lineChartOptions.selectedDataset" :label="lineChartOptions.dataset.label"
+                      :options="lineChartOptions.dataset"></v-select>
+        </div>
+        <div class="pop-box">
+            <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
+                        xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px"
+                        :data="lineChartKeywords"></line-chart>
         </div>
     </div>
-    <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
-        <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
-        <div class="w3-animate-right keyword selected-keyword"  v-for="k in selectedKeys">
-            <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
+
+
+    <div v-if="page=='businesses'">
+        <div class="pop-box">
+            <div class="search">
+                <input v-model="bp.search" class="search" v-on:keydown.enter="updateBusinesses(true)" v-on:blur="updateBusinesses(true)" placeholder="Søk i bedrifter" type="text">
+                <input type="range" min="1" max="10000">
+            </div>
+
         </div>
-    </div>
-    <div class="pop-box linechart-options">
-        <label v-on:change="loadedKeywords=[]" v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
-        <v-select v-model="lineChartOptions.selectedDataset" :label="lineChartOptions.dataset.label" :options="lineChartOptions.dataset"></v-select>
-    </div>
-    <div class="pop-box">
-    <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix" xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px" :data="lineChartKeywords"></line-chart>
+        <div class="pop-box" v-for="b in bp.loaded">
+            <div>
+                <p v-for="name in b.business_names">{{name}}</p>
+            </div>
+            <p>Antall stillingannonser: {{b.ads_posted}}</p>
+            <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+        </div>
     </div>
 </div>
 <script src="/js/dist/main.js"></script>

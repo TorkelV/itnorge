@@ -34,10 +34,8 @@
     (or (empty? ks) (every? (fn [k] (some #(= k %) (:keywords b))) ks))
     (or
       (= search "!")
-      (some #(cstr/includes? % search) (:business_names b))
-      (some #(cstr/includes? % search) (:daughter_companies b))
-      (cstr/includes? (:business_orgnr b) search)
-      (some #(cstr/includes? % search) (:daughter_companies b))
+      (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:business_names b))
+      (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:daughter_companies b))
       )
     (<= posted-l (:ads_posted b))
     (or (zero? posted-m) (>= posted-m (:ads_posted b)))
