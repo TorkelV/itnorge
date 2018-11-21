@@ -7,14 +7,24 @@
     <link rel="stylesheet" type="text/css" href="/css/popover.css">
 </head>
 <body>
+
 <div id="app">
-    <button v-on:click="initFront()">Front</button>
-    <button v-on:click="initBusinesses()">Selskaper</button>
-    <div v-if="page=='front'">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid-nav">
+            <div class="navbar-header">
+                <a v-on:click="initStatistics()" id="phome" class="navbar-brand">ITNorge</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a v-on:click="initStatistics()">Statistikk</a></li>
+                <li><a v-on:click="initBusinesses()">Selskaper</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div v-if="page=='statistics'">
 
 
         <div class="pop-box keyword-group not-selected-keywords">
-            <div class="search"><input placeholder="Søk" v-on:keyup.enter="addKeywords" type="text"
+            <div class="search"><input placeholder="Søk i teknologier" v-on:keyup.enter="addKeywords" type="text"
                                        v-model="searchKeywords"></div>
             <div v-for="k in keywordsPlain"
                  v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
@@ -37,16 +47,41 @@
         <div class="pop-box">
             <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
                         xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px"
-                        :data="lineChartKeywords"></line-chart>
+                        :data="loadedKeywords"></line-chart>
         </div>
     </div>
 
 
+
+
     <div v-if="page=='businesses'">
+        <div class="pop-box keyword-group not-selected-keywords">
+            <div class="search"><input placeholder="Søk i teknologier" v-on:keyup.enter="addKeywords" type="text"
+                                       v-model="searchKeywords"></div>
+            <div v-for="k in keywordsPlain"
+                 v-if="!bp.keywords.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                 class="w3-animate-right keyword not-selected-keyword item">
+                <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
+            </div>
+        </div>
+        <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
+            <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
+            <div class="w3-animate-right keyword selected-keyword" v-for="k in bp.keywords">
+                <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
+            </div>
+        </div>
         <div class="pop-box">
             <div class="search">
-                <input v-model="bp.search" class="search" v-on:keydown.enter="updateBusinesses(true)" v-on:blur="updateBusinesses(true)" placeholder="Søk i bedrifter" type="text">
-                <input type="range" min="1" max="10000">
+                <input v-model="bp.search" class="search" v-on:keydown.enter="updateBusinesses(true)"
+                       v-on:blur="updateBusinesses(true)" placeholder="Søk i bedrifter" type="text">
+                <div class="an-slider">
+                    <label style="display:block">Antall annonser</label>
+                    <vue-slider v-model="bp.posted" v-bind="sliderProps" :value="[1,maxPosted]" :max="maxPosted"
+                                ref="slider"></vue-slider>
+                </div>
+
+                <label v-on:change="updateBusinesses(true)">Grupper datterselskaper<input
+                        type="checkbox" v-model="bp.groupCompanies"></label>
             </div>
 
         </div>

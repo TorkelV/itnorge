@@ -20,6 +20,7 @@
 
 (def KEYWORDS (rj "keywords"))
 (def BUSINESSES (rj "businesses"))
+(def FIRMS (rj "firms"))
 (def KEYWORDSPLAIN (sort-by cstr/lower-case (rj "keywordsplain")))
 
 (defn keywords [ks]
@@ -42,8 +43,8 @@
     )
   )
 
-(defn businesses [ks search posted-l posted-m to-take to-drop]
-  (drop to-drop (take to-take (filter #(filter-business % ks search posted-l posted-m) BUSINESSES))))
+(defn businesses [ks search posted-l posted-m to-take to-drop business-type]
+  (drop to-drop (take to-take (filter #(filter-business % ks search posted-l posted-m) (if business-type BUSINESSES FIRMS)))))
 
 
 
@@ -62,7 +63,7 @@
 
 
 (defroutes app
-           (GET "/businesses/:keywords/:search/:posted-l/:posted-m/:to-take/:to-drop" [keywords search posted-l posted-m to-take to-drop :as req]
+           (GET "/businesses/:keywords/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords search posted-l posted-m to-take to-drop business-type :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str
@@ -72,7 +73,8 @@
                            (Integer/parseInt posted-l)
                            (Integer/parseInt posted-m)
                            (Integer/parseInt to-take)
-                           (Integer/parseInt to-drop)))})
+                           (Integer/parseInt to-drop)
+                           (= business-type "true")))})
            (GET "/maxposted/" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
