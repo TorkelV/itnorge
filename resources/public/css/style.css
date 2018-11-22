@@ -186,4 +186,21 @@ nav a {
     color: #9d9d9d;
 }
 
+.footer {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    background: #222;
+}
+.footer span{
+    color: #9d9d9d;
+}
+.footer-container{
+    display:table;
+    color: #777;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top:15px;
+}
+
 .w3-animate-right{position:relative;animation:animateright 0.4s}@keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}

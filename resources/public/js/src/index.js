@@ -7,19 +7,16 @@ import Vue from 'vue'
 import Chart from 'chart.js'
 import vSelect from 'vue-select'
 import VTooltip from 'v-tooltip'
-import AsyncComputed from 'vue-async-computed'
 
-Vue.use(AsyncComputed);
 Vue.use(VTooltip);
 Vue.component('v-select', vSelect);
-Vue.use(VueChartkick);
+Vue.use(VueChartkick, {adapter: Chart});
 
 async function getKeywords() {
     return await $.get(`/keywordsplain/`);
 }
 
 async function getLineChartKeywords(val, keys, all) {
-
     return keys.length <= 1 ? [] : await $.get(`/linechart-keywords/${val}/!${keys}/${all}/`);
 }
 
@@ -45,6 +42,7 @@ var app = new Vue({
         data: {
             page: 'statistics',
             maxPosted: 3000,
+            keywordsPlain: [],
             bp: {
                 loaded: [],
                 keywords: [],
@@ -63,7 +61,7 @@ var app = new Vue({
             lineChartOptions: {
                 library: {scales: {yAxes: [{ticks: {maxTicksLimit: 20}}]}},
                 onlyKeyedAds: {
-                    label: "Kun annonser med nøkkelord",
+                    label: "Kun annonser med teknologier",
                     value: true,
                     tooltip: `Velg å kun ta med stillinger som inneholder minst en teknologi. <br> Noen stillingsannonser er veldig generell og inneholder ikke teknologier. <br> Datasettet kan inneholde noen ingeniør-stillinger som ikke er it-relatert.`
                 },
@@ -135,22 +133,10 @@ var app = new Vue({
                 function () {
                     this.updateBusinesses(true);
                 }
-        }
-        ,
-        asyncComputed: {
-            keywordsPlain: {
-                lazy: true,
-                get() {
-                    return getKeywords().then(e => e);
-                }
-            }
-
-        }
-        ,
+        },
         components: {
             vueSlider
-        }
-        ,
+        },
         methods: {
             updateLineChart() {
                 this.loadedKeywords = this.loadedKeywords.filter(e => this.selectedKeys.includes(e.name));
@@ -183,6 +169,8 @@ var app = new Vue({
             }
             ,
             clearKeywords() {
+                this.bp.keywords = [];
+                this.bp.search = '';
                 this.selectedKeys = [];
                 this.searchKeywords = '';
             }
@@ -230,6 +218,7 @@ var app = new Vue({
         }
         ,
         created() {
+            getKeywords().then(e => this.keywordsPlain = e);
             this.initStatistics();
         }
     })
