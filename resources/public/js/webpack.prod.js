@@ -1,4 +1,5 @@
 module.exports = {
+  mode: 'production',
   module: {
     rules: [
       {
@@ -12,7 +13,7 @@ module.exports = {
   },
   resolve: {
   alias: {
-    vue: 'vue/dist/vue.js'
+    vue: 'vue/dist/vue.min'
   }
 }
 }
