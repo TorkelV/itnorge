@@ -12,6 +12,7 @@
     "babel-preset-env": "^1.7.0",
     "chart.js": "^2.7.3",
     "jquery": "^3.3.1",
+    "pretty-checkbox": "^3.0.3",
     "regenerator-runtime": "^0.13.1",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.17",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
+    "pretty-checkbox-vue": "^1.1.9",
     "webpack-cli": "^3.1.2"
   },
   "scripts": {

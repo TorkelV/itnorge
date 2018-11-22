@@ -2,9 +2,11 @@
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IT Norge</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/popover.css">
+    <link rel="stylesheet" type="text/css" href="/css/pretty-checkbox.min.css">
 </head>
 <body>
 
@@ -21,8 +23,6 @@
         </div>
     </nav>
     <div v-if="page=='statistics'">
-
-
         <div class="pop-box keyword-group not-selected-keywords">
             <div class="search"><input placeholder="Søk i teknologier" v-on:keyup.enter="addKeywords" type="text"
                                        v-model="searchKeywords"></div>
@@ -39,10 +39,15 @@
             </div>
         </div>
         <div class="pop-box linechart-options">
-            <label v-on:change="loadedKeywords=[]" v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}<input
-                    type="checkbox" v-model="lineChartOptions.onlyKeyedAds.value"></label>
-            <v-select v-model="lineChartOptions.selectedDataset" :label="lineChartOptions.dataset.label"
-                      :options="lineChartOptions.dataset"></v-select>
+
+            <p-check class="p-switch p-fill" v-on:change="(loadedKeywords=[],updateLineChart())"
+                     v-model="lineChartOptions.onlyKeyedAds.value"
+                     v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}
+            </p-check>
+            <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
+                     v-model="lineChartOptions.selectedDataset" :value="d">
+                {{d.label}}
+            </p-radio>
         </div>
         <div class="pop-box">
             <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
@@ -50,8 +55,6 @@
                         :data="loadedKeywords"></line-chart>
         </div>
     </div>
-
-
 
 
     <div v-if="page=='businesses'">
@@ -79,18 +82,24 @@
                     <vue-slider v-model="bp.posted" v-bind="sliderProps" :value="[1,maxPosted]" :max="maxPosted"
                                 ref="slider"></vue-slider>
                 </div>
-
-                <label v-on:change="updateBusinesses(true)">Grupper datterselskaper<input
-                        type="checkbox" v-model="bp.groupCompanies"></label>
+                <p-check class="p-switch p-fill" @change="updateBusinesses(true)" v-model="bp.groupCompanies">Grupper
+                    datterselskaper
+                </p-check>
             </div>
 
         </div>
-        <div class="pop-box" v-for="b in bp.loaded">
-            <div>
-                <p v-for="name in b.business_names">{{name}}</p>
+        <div class="pop-box">
+            <h1> Selskaper </h1>
+            <div class="pop-box" v-for="b in bp.loaded">
+                <div>
+                    <p v-for="name in b.business_names">{{name}}</p>
+                </div>
+                <p>Antall stillingannonser: {{b.ads_posted}}</p>
+                <p class="keyword" v-for="k in b.keywords">{{k}}</p>
             </div>
-            <p>Antall stillingannonser: {{b.ads_posted}}</p>
-            <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+            <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
+            <div class="pop-box loader" v-if="loading"><img id="loader-img" src="/img/loader.gif">
+                <p>Loading..</p></div>
         </div>
     </div>
 

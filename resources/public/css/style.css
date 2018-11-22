@@ -173,6 +173,14 @@ nav a:hover{
     padding: 10px 1px;
 }
 
+.loader {
+    text-align: center;
+}
+
+.loader img{
+    height: 32px;
+}
+
 .nav > li:first-child > a {
     padding: 10px 20px;
 }

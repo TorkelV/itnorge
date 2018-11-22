@@ -5,11 +5,13 @@ import $ from "jquery";
 import VueChartkick from 'vue-chartkick'
 import Vue from 'vue'
 import Chart from 'chart.js'
-import vSelect from 'vue-select'
 import VTooltip from 'v-tooltip'
+import PrettyCheck from 'pretty-checkbox-vue/check';
+import PrettyRadio from 'pretty-checkbox-vue/radio';
 
+Vue.component('p-radio', PrettyRadio);
+Vue.component('p-check', PrettyCheck);
 Vue.use(VTooltip);
-Vue.component('v-select', vSelect);
 Vue.use(VueChartkick, {adapter: Chart});
 
 async function getKeywords() {
@@ -43,6 +45,7 @@ var app = new Vue({
             page: 'statistics',
             maxPosted: 3000,
             keywordsPlain: [],
+            loading: false,
             bp: {
                 loaded: [],
                 keywords: [],
@@ -53,13 +56,20 @@ var app = new Vue({
                 search: "",
                 lastSearch: false,
                 groupCompanies: false,
+                noResult: false
             },
             onBottomOfPage: false,
             searchKeywords: '',
             selectedKeys: ['Java', 'SQL'],
             loadedKeywords: [],
             lineChartOptions: {
-                library: {scales: {yAxes: [{ticks: {maxTicksLimit: 20}}]}},
+                library: {
+                    scales: {
+                        yAxes: [{scaleLabel: {fontColor: "F8F8F8"},ticks: {fontColor: "#F8F8F8", maxTicksLimit: 20}}],
+                        xAxes: [{scaleLabel: {fontColor: "F8F8F8"},ticks: {fontColor: "#F8F8F8"}}],
+                    },
+                    legend: {labels: {fontColor: "#F8F8F8"}}
+                },
                 onlyKeyedAds: {
                     label: "Kun annonser med teknologier",
                     value: true,
@@ -105,29 +115,22 @@ var app = new Vue({
         watch: {
             selectedKeys() {
                 this.updateLineChart();
-            }
-            ,
+            },
             onBottomOfPage(onBottomOfPage) {
                 if (onBottomOfPage) {
                     this.updateBusinesses();
                 }
-            }
-            ,
+            },
             'lineChartOptions.selectedDataset':
-
                 function () {
                     this.loadedKeywords = [];
                     this.updateLineChart();
-                }
-
-            ,
+                },
             'bp.posted':
 
                 function () {
                     this.updateBusinesses(true);
-                }
-
-            ,
+                },
             'bp.keywords':
 
                 function () {
@@ -163,6 +166,7 @@ var app = new Vue({
             }
             ,
             initStatistics() {
+                this.lineChartOptions.selectedDataset = this.lineChartOptions.dataset[0];
                 this.page = "statistics";
                 this.updateLineChart();
                 window.removeEventListener('scroll', this.bottomScrollHandler);
@@ -185,7 +189,7 @@ var app = new Vue({
                     && this.bp.posted[1] === this.bp.lastSearch.postedMax
                     && this.bp.keywords.join(",") === this.bp.lastSearch.keywords.join(",")
                     && this.bp.search === this.bp.lastSearch.search
-                    && this.groupCompanies === this.bp.lastSearch.groupCompanies)) {
+                    && this.bp.groupCompanies === this.bp.lastSearch.groupCompanies)) {
                     this.bp.lastSearch = {
                         search: this.bp.search,
                         postedMin: this.bp.posted[0],
@@ -196,7 +200,8 @@ var app = new Vue({
                     if (clear) {
                         this.bp.loaded = [];
                     }
-                    console.log(this.bp.posted);
+                    this.loading = true;
+                    this.bp.noResult = false;
                     getBusinesses(this.bp.keywords.join("!"),
                         this.bp.search,
                         this.bp.posted[0],
@@ -204,7 +209,11 @@ var app = new Vue({
                         this.bp.loaded.length + this.bp.toTake,
                         this.bp.loaded.length,
                         this.bp.groupCompanies
-                    ).then(e => this.bp.loaded = clear ? e : [].concat(this.bp.loaded).concat(e))
+                    ).then(e => {
+                        this.bp.loaded = clear ? e : [].concat(this.bp.loaded).concat(e);
+                        this.bp.noResult = this.bp.loaded.length === 0;
+                        this.loading = false;
+                    })
                 }
             }
             ,
