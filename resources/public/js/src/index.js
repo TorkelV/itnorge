@@ -43,15 +43,14 @@ var app = new Vue({
         el: '#app',
         data: {
             page: 'statistics',
-            maxPosted: 3000,
             keywordsPlain: [],
             loading: false,
+            minimize: false,
             bp: {
                 loaded: [],
                 keywords: [],
-                posted: [0, 0],
                 postedMin: 0,
-                postedMax: 0,
+                postedMax: 3000,
                 toTake: 25,
                 search: "",
                 lastSearch: false,
@@ -65,8 +64,8 @@ var app = new Vue({
             lineChartOptions: {
                 library: {
                     scales: {
-                        yAxes: [{scaleLabel: {fontColor: "F8F8F8"},ticks: {fontColor: "#F8F8F8", maxTicksLimit: 20}}],
-                        xAxes: [{scaleLabel: {fontColor: "F8F8F8"},ticks: {fontColor: "#F8F8F8"}}],
+                        yAxes: [{scaleLabel: {fontColor: "F8F8F8"}, ticks: {fontColor: "#F8F8F8", maxTicksLimit: 20}}],
+                        xAxes: [{scaleLabel: {fontColor: "F8F8F8"}, ticks: {fontColor: "#F8F8F8"}}],
                     },
                     legend: {labels: {fontColor: "#F8F8F8"}}
                 },
@@ -83,7 +82,7 @@ var app = new Vue({
             },
             sliderProps: {
                 lazy: true,
-                width: "163px",
+                width: "200px",
                 "tooltip-dir": ["bottom", "bottom"],
                 height: 8,
                 dotSize: 16,
@@ -110,6 +109,11 @@ var app = new Vue({
                     "backgroundColor":
                         "#999"
                 }
+            }
+        },
+        computed: {
+            isMobile: function () {
+                return window.innerWidth < 768;
             }
         },
         watch: {
@@ -159,8 +163,8 @@ var app = new Vue({
             initBusinesses() {
                 this.page = "businesses";
                 getMaxPosted().then(e => {
-                    this.maxPosted = e;
-                    this.bp.posted = [0, e];
+                    this.bp.postedMax = e;
+                    this.updateBusinesses(true);
                 });
                 window.addEventListener('scroll', this.bottomScrollHandler);
             }
@@ -185,15 +189,15 @@ var app = new Vue({
             ,
             updateBusinesses(clear) {
                 if (!(clear && this.bp.lastSearch
-                    && this.bp.posted[0] === this.bp.lastSearch.postedMin
-                    && this.bp.posted[1] === this.bp.lastSearch.postedMax
+                    && this.bp.postedMin === this.bp.lastSearch.postedMin
+                    && this.bp.postedMax === this.bp.lastSearch.postedMax
                     && this.bp.keywords.join(",") === this.bp.lastSearch.keywords.join(",")
                     && this.bp.search === this.bp.lastSearch.search
                     && this.bp.groupCompanies === this.bp.lastSearch.groupCompanies)) {
                     this.bp.lastSearch = {
                         search: this.bp.search,
-                        postedMin: this.bp.posted[0],
-                        postedMax: this.bp.posted[1],
+                        postedMin: this.bp.postedMin,
+                        postedMax: this.bp.postedMax,
                         keywords: this.bp.keywords.slice(),
                         groupCompanies: this.bp.groupCompanies
                     };
@@ -204,8 +208,8 @@ var app = new Vue({
                     this.bp.noResult = false;
                     getBusinesses(this.bp.keywords.join("!"),
                         this.bp.search,
-                        this.bp.posted[0],
-                        this.bp.posted[1],
+                        this.bp.postedMin,
+                        this.bp.postedMax,
                         this.bp.loaded.length + this.bp.toTake,
                         this.bp.loaded.length,
                         this.bp.groupCompanies
@@ -224,8 +228,7 @@ var app = new Vue({
                 const bottomOfPage = visible + scrollY >= pageHeight;
                 return bottomOfPage || pageHeight < visible;
             }
-        }
-        ,
+        },
         created() {
             getKeywords().then(e => this.keywordsPlain = e);
             this.initStatistics();
