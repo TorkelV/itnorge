@@ -4,6 +4,28 @@
     color: #F8F8F8;
 }
 
+.filters{
+    width: 220px;
+    display:inline-block;
+    vertical-align:top;
+    float: left;
+}
+
+
+
+.main-content{
+    display: inline-block;
+    width:100%;
+}
+
+.businesses{
+    display: inline-block;
+    float: left;
+    width: calc(100% - 235px);
+    margin-left: 15px;
+    vertical-align: top;
+}
+
 .dropdown-menu {
     background-color: #45494A !important;
 }
@@ -27,14 +49,29 @@ body{
     background-color: #2B2B2B;
 }
 
+.filters-misc .search > div:not(:first-child) {
+    margin-top:15px;
+}
+
+.close-menu{
+    float: right;
+    width: 20px;
+    cursor: pointer;
+}
+
+.ph-search {
+    display: inline-block;
+    float: left;
+}
+
+.business-search{
+    margin: 5px 0 0 0 !important;
+}
+
+
 #app{
     background-color: #2B2B2B;
     margin: 0px 15px 0px 15px;
-}
-
-.an-slider {
-    display: inline-block;
-    text-align: center;
 }
 
 .keyword {
@@ -47,8 +84,11 @@ body{
     background-color: #45494A;
 }
 
-.clear-button {
-    background-color: #FF4136;
+.search-btn{
+    background-color: #45994A;
+}
+
+.btn {
     border: none;
     display: inline-block;
     margin: 3px;
@@ -56,6 +96,10 @@ body{
     box-shadow: 1px 3px 2.51px rgba(0,0,0,0.3);
     border-radius: 3px;
     color: #FFF;
+}
+
+.clear-button {
+    background-color: #99494A;
 }
 
 .v-select .dropdown-toggle .clear {
@@ -73,13 +117,17 @@ body{
     padding: 5px 10px;
     margin: 8px 0;
     background-color: #45494A;
-    display: inline-block;
     border: 1px solid #646464;
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-.keyword:hover, .clear-button:hover{
+.businessesm{
+    width:100%;
+    margin: 0;
+}
+
+.keyword:hover, .btn:hover{
     transform: scale(1.05);
 }
 
@@ -113,6 +161,45 @@ body{
     user-select: none;
 }
 
+.intro-container{
+    margin: 0 auto;
+    display:table;
+}
+
+.intro h1{
+    color: #337ab7;
+}
+
+.feedback{
+    margin-top:10px !important;
+}
+
+.cards{
+    display:table;
+    margin: 0 auto;
+}
+
+.card img {
+    width: 350px;
+}
+
+.card h2{
+    text-align: center;
+}
+
+.card p, .intro p{
+    margin: 5px;
+}
+
+.card{
+    vertical-align: top;
+    margin: 5px;
+    cursor: pointer;
+    width:350px;
+    padding: 15px;
+    display:inline-block;
+}
+
 nav {
     margin: 0 -15px 0 -15px;
 }
@@ -120,15 +207,14 @@ nav {
 .navbar-brand {
     float: left;
     height: 50px;
-    padding: 15px 15px;
     font-size: 18px;
+    margin: 15px 15px 0px 20px;
     line-height: 20px;
 }
 
 .navbar {
     position: relative;
     min-height: 50px;
-    margin-bottom: 20px;
     border: 1px solid transparent;
 }
 .navbar-nav > li {
@@ -212,3 +298,16 @@ nav a {
 }
 
 .w3-animate-right{position:relative;animation:animateright 0.4s}@keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+
+
+.an-slider input {
+    width: 90px;
+    display:inline-block;
+}
+
+@media screen and (min-width:768px){
+
+    #hide-filters{
+        display: none !important;
+    }
+}

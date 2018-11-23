@@ -14,7 +14,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid-nav">
             <div class="navbar-header">
-                <a v-on:click="initStatistics()" id="phome" class="navbar-brand">ITNorge</a>
+                <a v-on:click="initFront()" id="phome" class="navbar-brand">ITNorge</a>
             </div>
             <ul class="nav navbar-nav">
                 <li><a v-on:click="initStatistics()">Statistikk</a></li>
@@ -22,93 +22,139 @@
             </ul>
         </div>
     </nav>
-    <div v-if="page=='statistics'">
-        <div class="pop-box keyword-group not-selected-keywords">
-            <div class="search"><input placeholder="Søk i teknologier" v-on:keyup.enter="addKeywords" type="text"
-                                       v-model="searchKeywords"></div>
-            <div v-for="k in keywordsPlain"
-                 v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
-                 class="w3-animate-right keyword not-selected-keyword item">
-                <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
-            </div>
-        </div>
-        <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
-            <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
-            <div class="w3-animate-right keyword selected-keyword" v-for="k in selectedKeys">
-                <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys" v-bind:value="k"></label>
-            </div>
-        </div>
-        <div class="pop-box linechart-options">
+    <div class="main-content">
+        <div  v-if="page=='front'">
+            <div class="intro-container">
+                <div class="intro pop-box">
+                    <h1>Velkommen til ITNorge Beta</h1>
+                    <p>ITNorge er ment som en plattform hvor utviklere og andre teknologi interesserte kan få et større overblikk over IT selskaper i Norge.</p>
+                    <p>Basert på 2.5 millioner stillingsannonser fra nav.no har vi trukket ut IT annonser og teknologier.</p>
+                    <p> Har du noen gang lurt på om det finnes selskaper som bruker Clojurescript? Eller kanskje en kombinasjon av GraphQL og Ruby? </p>
+                    <p>Vil du vite hvor mange som brukte React i 2015? Kanskje du får svaret her.</p>
+                    <p class="feedback">Savner du noe? Send gjerne en tilbakemelding til <a href="mailto:kontakt@itnorge.net">kontakt@itnorge.net</a></p>
 
-            <p-check class="p-switch p-fill" v-on:change="(loadedKeywords=[],updateLineChart())"
-                     v-model="lineChartOptions.onlyKeyedAds.value"
-                     v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}
-            </p-check>
-            <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
-                     v-model="lineChartOptions.selectedDataset" :value="d">
-                {{d.label}}
-            </p-radio>
-        </div>
-        <div class="pop-box">
-            <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
-                        xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px"
-                        :data="loadedKeywords"></line-chart>
-        </div>
-    </div>
-
-
-    <div v-if="page=='businesses'">
-        <div class="pop-box keyword-group not-selected-keywords">
-            <div class="search"><input placeholder="Søk i teknologier" v-on:keyup.enter="addKeywords" type="text"
-                                       v-model="searchKeywords"></div>
-            <div v-for="k in keywordsPlain"
-                 v-if="!bp.keywords.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
-                 class="w3-animate-right keyword not-selected-keyword item">
-                <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
-            </div>
-        </div>
-        <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
-            <button class="clear-button" v-on:click="clearKeywords">Fjern alle</button>
-            <div class="w3-animate-right keyword selected-keyword" v-for="k in bp.keywords">
-                <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
-            </div>
-        </div>
-        <div class="pop-box">
-            <div class="search">
-                <input v-model="bp.search" class="search" v-on:keydown.enter="updateBusinesses(true)"
-                       v-on:blur="updateBusinesses(true)" placeholder="Søk i bedrifter" type="text">
-                <div class="an-slider">
-                    <label style="display:block">Antall annonser</label>
-                    <vue-slider v-model="bp.posted" v-bind="sliderProps" :value="[1,maxPosted]" :max="maxPosted"
-                                ref="slider"></vue-slider>
                 </div>
-                <p-check class="p-switch p-fill" @change="updateBusinesses(true)" v-model="bp.groupCompanies">Grupper
-                    datterselskaper
+            </div>
+            <div class="cards">
+                <div v-on:click="initStatistics()" class="card pop-box">
+                    <h2>Teknologi over tid</h2>
+                    <img src="/img/graph.png">
+                    <p>I 2002 var det færre enn 4% av stillingsannonser som nevnte JavaScript.</p>
+                    <p> Nå er det over 30%! </p>
+                    <p>Sjekk ut populariteten av ulike teknologier og "buzz words" her.</p>
+                </div>
+                <div v-on:click="initBusinesses()" class="card pop-box">
+                    <h2>Selskapers teknologi</h2>
+                    <img src="/img/search.png">
+                    <p>Har du lurt på hvilke selskaper som bruker din favoritt teknologi?</p>
+                    <p> Noen selskaper legger nesten aldri ut annonser og det kan være vansklig å finne frem. </p>
+                    <p>Sjekk ut hvilke teknologier spesifikke selskaper bruker her.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div v-if="page=='statistics'">
+            <div class="pop-box keyword-group not-selected-keywords">
+                <div class="search"><input placeholder="Teknologi" v-on:keyup.enter="addKeywords" type="text"
+                                           v-model="searchKeywords"></div>
+                <div v-for="k in keywordsPlain"
+                     v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                     class="w3-animate-right keyword not-selected-keyword item">
+                    <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys"
+                                                            v-bind:value="k"></label>
+                </div>
+            </div>
+            <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
+                <button class="clear-button btn" v-on:click="clearKeywords">Fjern alle</button>
+                <div class="w3-animate-right keyword selected-keyword" v-for="k in selectedKeys">
+                    <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys"
+                                                            v-bind:value="k"></label>
+                </div>
+            </div>
+            <div class="pop-box linechart-options">
+
+                <p-check class="p-switch p-fill" v-on:change="(loadedKeywords=[],updateLineChart())"
+                         v-model="lineChartOptions.onlyKeyedAds.value"
+                         v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}
                 </p-check>
+                <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
+                         v-model="lineChartOptions.selectedDataset" :value="d">
+                    {{d.label}}
+                </p-radio>
             </div>
-
+            <div class="pop-box">
+                <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
+                            xtitle="År" v-bind:ytitle="lineChartOptions.selectedDataset.axisTitle" height="600px"
+                            :data="loadedKeywords"></line-chart>
+            </div>
         </div>
-        <div class="pop-box">
-            <h1> Selskaper </h1>
-            <div class="pop-box" v-for="b in bp.loaded">
-                <div>
-                    <p v-for="name in b.business_names">{{name}}</p>
-                </div>
-                <p>Antall stillingannonser: {{b.ads_posted}}</p>
-                <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+
+
+        <div class="bp" v-if="page=='businesses'">
+            <div v-if="minimize" class="pop-box ph-search">
+                <img src="/img/minimize.png" v-on:click="minimize = !minimize" class="close-menu">
             </div>
-            <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
-            <div class="pop-box loader" v-if="loading"><img id="loader-img" src="/img/loader.gif">
-                <p>Loading..</p></div>
+            <div v-if="!minimize" class="filters">
+                <div class="pop-box filters-misc">
+                    <div class="search">
+                        <div>
+                            <img src="/img/minimize.png" v-on:click="minimize = !minimize" class="close-menu">
+                            <input v-model="bp.search" class="search business-search" v-on:keydown.enter="updateBusinesses(true)"
+                                   v-on:blur="updateBusinesses(true)" placeholder="Bedrift" type="text">
+                        </div>
+                        <div>
+                            <p-check class="p-default" @change="updateBusinesses(true)"
+                                     v-model="bp.groupCompanies">Grupper selskaper
+                            </p-check>
+                        </div>
+                        <div class="an-slider">
+                            <label style="display:block">Antall annonser</label>
+                            <input type="text" v-model="bp.postedMin" v-on:keydown.enter="updateBusinesses(true)"
+                                   v-on:blur="updateBusinesses(true)">
+                            -
+                            <input type="text" v-model="bp.postedMax" v-on:keydown.enter="updateBusinesses(true)"
+                                   v-on:blur="updateBusinesses(true)">
+                        </div>
+                    </div>
+                </div>
+                <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
+                    <button class="clear-button btn" v-on:click="clearKeywords">Fjern alle</button>
+                    <div class="w3-animate-right keyword selected-keyword" v-for="k in bp.keywords">
+                        <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
+                    </div>
+                </div>
+                <div class="pop-box keyword-group not-selected-keywords">
+                    <div class="search"><input placeholder="Teknologi" v-on:keyup.enter="addKeywordsbp"
+                                               type="text"
+                                               v-model="searchKeywords"></div>
+                    <div v-for="k in keywordsPlain"
+                         v-if="!bp.keywords.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                         class="w3-animate-right keyword not-selected-keyword item">
+                        <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="businesses" v-bind:class="{ businessesm: minimize }">
+                <div class="pop-box" v-for="b in bp.loaded">
+                    <div>
+                        <h3 v-for="name in b.business_names">{{name}}</h3>
+                    </div>
+                    <p>Antall stillingsannonser: {{b.ads_posted}}</p>
+                    <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+                </div>
+                <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
+                <div class="pop-box loader" v-if="loading"><img id="loader-img" src="/img/loader.gif">
+                    <p>Loading..</p></div>
+            </div>
         </div>
     </div>
-
 </div>
-<footer class="footer">
+<!--<footer class="footer">
     <div class="footer-container">
         <span>Placeholder</span>
     </div>
-</footer>
+</footer>-->
 <script src="/js/dist/main.js"></script>
 </body>
 </html>
