@@ -33,6 +33,8 @@ async function getKeywordStats(keys) {
 async function getBusinesses(keywords, search, postedMin, postedMax, take, drop, groupCompanies) {
     search = search === "" ? "!" : search;
     keywords = keywords === "" ? "!" : keywords;
+    postedMax = isNaN(postedMax) ? 0 : postedMax;
+    postedMin = isNaN(postedMin) ? 0 : postedMin;
     return await $.get(`/businesses/${keywords}/${search}/${postedMin}/${postedMax}/${take}/${drop}/${groupCompanies}/`);
 }
 

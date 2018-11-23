@@ -78,10 +78,12 @@
                          v-model="lineChartOptions.onlyKeyedAds.value"
                          v-tooltip="lineChartOptions.onlyKeyedAds.tooltip">{{lineChartOptions.onlyKeyedAds.label}}
                 </p-check>
-                <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
-                         v-model="lineChartOptions.selectedDataset" :value="d">
+                <div class="lc-radio">
+                    <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
+                                          v-model="lineChartOptions.selectedDataset" :value="d">
                     {{d.label}}
-                </p-radio>
+                </p-radio></div>
+
             </div>
             <div class="pop-box">
                 <line-chart :library="lineChartOptions.library" v-bind:suffix="lineChartOptions.selectedDataset.suffix"
@@ -110,10 +112,10 @@
                         </div>
                         <div class="an-slider">
                             <label style="display:block">Antall annonser</label>
-                            <input type="text" v-model="bp.postedMin" v-on:keydown.enter="updateBusinesses(true)"
+                            <input min="0" type="number" v-model="bp.postedMin" v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)">
                             -
-                            <input type="text" v-model="bp.postedMax" v-on:keydown.enter="updateBusinesses(true)"
+                            <input min="0" type="number" v-model="bp.postedMax" v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)">
                         </div>
                     </div>

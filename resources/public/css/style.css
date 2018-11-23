@@ -291,6 +291,11 @@ nav a {
 .footer span{
     color: #9d9d9d;
 }
+
+.lc-radio{
+    display: inline-block;
+}
+
 .footer-container{
     display:table;
     color: #777;
@@ -307,9 +312,28 @@ nav a {
     display:inline-block;
 }
 
-@media screen and (min-width:768px){
+@media screen and (min-width:600px) and (max-width:810px){
+    .card img {
+        width: 100%;
+    }
+    .card {
+        width: 43%;
+    }
+}
 
-    #hide-filters{
-        display: none !important;
+@media screen and (max-width: 600px){
+    .card img{
+        width: 100%;
+    }
+    .card{
+        width: auto;
+    }
+}
+
+@media screen and (max-width:650px){
+
+    .lc-radio{
+        display: block;
+        margin-top: 15px;
     }
 }
