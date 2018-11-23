@@ -158,8 +158,17 @@ var app = new Vue({
             ,
             bottomScrollHandler() {
                 this.onBottomOfPage = this.bottomVisible();
-            }
-            ,
+            },
+            init () {
+              if(this.page !== "businesses"){
+                  window.removeEventListener('scroll', this.bottomScrollHandler);
+              }
+              getKeywords().then(e => this.keywordsPlain = e);
+            },
+            initFront(){
+              this.page = "front";
+
+            },
             initBusinesses() {
                 this.page = "businesses";
                 getMaxPosted().then(e => {
@@ -173,7 +182,6 @@ var app = new Vue({
                 this.lineChartOptions.selectedDataset = this.lineChartOptions.dataset[0];
                 this.page = "statistics";
                 this.updateLineChart();
-                window.removeEventListener('scroll', this.bottomScrollHandler);
             }
             ,
             clearKeywords() {
@@ -185,8 +193,10 @@ var app = new Vue({
             ,
             addKeywords() {
                 this.selectedKeys = this.selectedKeys.concat(this.keywordsPlain.filter(k => !this.selectedKeys.includes(k) && (this.searchKeywords === '' || k.toLowerCase().includes(this.searchKeywords.toLowerCase()))))
-            }
-            ,
+            },
+            addKeywordsbp() {
+                this.bp.keywords = this.bp.keywords.concat(this.keywordsPlain.filter(k => !this.bp.keywords.includes(k) && (this.searchKeywords === '' || k.toLowerCase().includes(this.searchKeywords.toLowerCase()))))
+            },
             updateBusinesses(clear) {
                 if (!(clear && this.bp.lastSearch
                     && this.bp.postedMin === this.bp.lastSearch.postedMin
@@ -230,8 +240,8 @@ var app = new Vue({
             }
         },
         created() {
-            getKeywords().then(e => this.keywordsPlain = e);
-            this.initStatistics();
+            this.init();
+            this.initFront();
         }
     })
 ;
