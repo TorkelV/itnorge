@@ -23,15 +23,19 @@
         </div>
     </nav>
     <div class="main-content">
-        <div  v-if="page=='front'">
+        <div v-if="page=='front'">
             <div class="intro-container">
                 <div class="intro pop-box">
                     <h1>Velkommen til ITNorge Beta</h1>
-                    <p>ITNorge er ment som en plattform hvor utviklere og andre teknologi interesserte kan få et større overblikk over IT selskaper i Norge.</p>
-                    <p>Basert på 2.5 millioner stillingsannonser fra nav.no har vi trukket ut IT annonser og teknologier.</p>
-                    <p> Har du noen gang lurt på om det finnes selskaper som bruker Clojurescript? Eller kanskje en kombinasjon av GraphQL og Ruby? </p>
+                    <p>ITNorge er ment som en plattform hvor utviklere og andre teknologi interesserte kan få et større
+                        overblikk over IT selskaper i Norge.</p>
+                    <p>Basert på 2.5 millioner stillingsannonser fra nav.no har vi trukket ut IT annonser og
+                        teknologier.</p>
+                    <p> Har du noen gang lurt på om det finnes selskaper som bruker Clojurescript? Eller kanskje en
+                        kombinasjon av GraphQL og Ruby? </p>
                     <p>Vil du vite hvor mange som brukte React i 2015? Kanskje du får svaret her.</p>
-                    <p class="feedback">Savner du noe? Send gjerne en tilbakemelding til <a href="mailto:kontakt@itnorge.net">kontakt@itnorge.net</a></p>
+                    <p class="feedback">Savner du noe? Send gjerne en tilbakemelding til <a
+                            href="mailto:kontakt@itnorge.net">kontakt@itnorge.net</a></p>
 
                 </div>
             </div>
@@ -58,19 +62,18 @@
             <div class="pop-box keyword-group not-selected-keywords">
                 <div class="search"><input placeholder="Teknologi" v-on:keyup.enter="addKeywords" type="text"
                                            v-model="searchKeywords"></div>
-                <div v-for="k in keywordsPlain"
-                     v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
-                     class="w3-animate-right keyword not-selected-keyword item">
-                    <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys"
-                                                            v-bind:value="k"></label>
-                </div>
+
+                <label v-for="k in keywordsPlain"
+                       v-if="!selectedKeys.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                       class="w3-animate-right keyword not-selected-keyword item unselectable">{{k}}<input
+                        type="checkbox" v-model="selectedKeys"
+                        v-bind:value="k"></label>
             </div>
             <div v-if="selectedKeys.length" class="pop-box keyword-group selected-keywords">
                 <button class="clear-button btn" v-on:click="clearKeywords">Fjern alle</button>
-                <div class="w3-animate-right keyword selected-keyword" v-for="k in selectedKeys">
-                    <label class="unselectable">{{k}}<input type="checkbox" v-model="selectedKeys"
-                                                            v-bind:value="k"></label>
-                </div>
+                <label class="w3-animate-right keyword selected-keyword unselectable"
+                       v-for="k in selectedKeys">{{k}}<input type="checkbox" v-model="selectedKeys"
+                                                             v-bind:value="k"></label>
             </div>
             <div class="pop-box linechart-options">
 
@@ -80,9 +83,10 @@
                 </p-check>
                 <div class="lc-radio">
                     <p-radio :key="d.value" v-for="d in lineChartOptions.dataset"
-                                          v-model="lineChartOptions.selectedDataset" :value="d">
-                    {{d.label}}
-                </p-radio></div>
+                             v-model="lineChartOptions.selectedDataset" :value="d">
+                        {{d.label}}
+                    </p-radio>
+                </div>
 
             </div>
             <div class="pop-box">
@@ -102,7 +106,8 @@
                     <div class="search">
                         <div>
                             <img src="/img/minimize.png" v-on:click="minimize = !minimize" class="close-menu">
-                            <input v-model="bp.search" class="search business-search" v-on:keydown.enter="updateBusinesses(true)"
+                            <input v-model="bp.search" class="search business-search"
+                                   v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)" placeholder="Bedrift" type="text">
                         </div>
                         <div>
@@ -112,29 +117,32 @@
                         </div>
                         <div class="an-slider">
                             <label style="display:block">Antall annonser</label>
-                            <input min="0" type="number" v-model="bp.postedMin" v-on:keydown.enter="updateBusinesses(true)"
+                            <input min="0" type="number" v-model="bp.postedMin"
+                                   v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)">
                             -
-                            <input min="0" type="number" v-model="bp.postedMax" v-on:keydown.enter="updateBusinesses(true)"
+                            <input min="0" type="number" v-model="bp.postedMax"
+                                   v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)">
                         </div>
                     </div>
                 </div>
                 <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
                     <button class="clear-button btn" v-on:click="clearKeywords">Fjern alle</button>
-                    <div class="w3-animate-right keyword selected-keyword" v-for="k in bp.keywords">
-                        <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
+                    <div>
+                        <label class="unselectable w3-animate-right keyword selected-keyword" v-for="k in bp.keywords">{{k}}<input
+                                type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
                     </div>
                 </div>
                 <div class="pop-box keyword-group not-selected-keywords">
                     <div class="search"><input placeholder="Teknologi" v-on:keyup.enter="addKeywordsbp"
                                                type="text"
                                                v-model="searchKeywords"></div>
-                    <div v-for="k in keywordsPlain"
-                         v-if="!bp.keywords.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
-                         class="w3-animate-right keyword not-selected-keyword item">
-                        <label class="unselectable">{{k}}<input type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
-                    </div>
+
+                    <label v-for="k in keywordsPlain"
+                           v-if="!bp.keywords.includes(k) && (searchKeywords=='' || k.toLowerCase().includes(searchKeywords.toLowerCase()))"
+                           class="w3-animate-right keyword not-selected-keyword item unselectable">{{k}}<input
+                            type="checkbox" v-model="bp.keywords" v-bind:value="k"></label>
                 </div>
             </div>
             <div class="businesses" v-bind:class="{ businessesm: minimize }">

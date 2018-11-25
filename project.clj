@@ -10,3 +10,4 @@
                  [ring/ring-defaults "0.3.2"]]
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler itnorge.core/app})
+

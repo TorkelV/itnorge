@@ -137,7 +137,7 @@ body{
     clip: rect(0 0 0 0);
 }
 
-.selected-keyword label:after{
+.selected-keyword:after{
     content: url(/img/crossgreen.svg);
     margin-left: 5px;
     display: inline-block;
@@ -145,7 +145,7 @@ body{
     width:10px;
 }
 
-.not-selected-keyword label:after{
+.not-selected-keyword:after{
     content: url(/img/crossblue.svg);
     margin-left: 5px;
     display: inline-block;

@@ -1,19 +1,45 @@
 cd ~/itnorge
 export PATH="/home/torkel93:$PATH"
+echo pulling
 git pull
 rm -r target
+echo creating war
 lein ring uberwar
-
+echo delete target
 mkdir -p target/war
-cd target/war
+echo jar the war
 jar xf ../itnorge-0.1.0-SNAPSHOT-standalone.war
 cd WEB-INF/
+echo create config
 echo '<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>vin-lotteri</application>
+  <application>nav-ads</application>
   <version>1</version>
   <threadsafe>false</threadsafe>
 </appengine-web-app>' > appengine-web.xml
 cd ..
+echo deploy
 gcloud app deploy --quiet
+echo FINISHED
+rm ~/itnorge/target/war/WEB-INF/web.xml
 
+
+echo '<?xml version="1.0" encoding="UTF-8"?><web-app>
+  <servlet>
+    <servlet-name>itnorge.core/app servlet</servlet-name>
+    <servlet-class>itnorge.servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>itnorge.core/app servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+        <web-resource-name>everything</web-resource-name>
+        <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+</security-constraint>
+</web-app>' > ~/itnorge/target/war/WEB-INF/web.xml
 
