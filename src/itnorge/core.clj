@@ -22,6 +22,7 @@
 (def BUSINESSES (rj "businesses"))
 (def FIRMS (rj "firms"))
 (def KEYWORDSPLAIN (sort-by cstr/lower-case (rj "keywordsplain")))
+(def FYLKER (sort-by cstr/lower-case (rj "fylker")))
 
 (defn keywords [ks]
   (if (empty? ks) KEYWORDS
@@ -30,21 +31,22 @@
 (defn max-posted []
   (apply max (map :ads_posted BUSINESSES)))
 
-(defn filter-business [b ks search posted-l posted-m]
+(defn filter-business [b ks fylker search posted-l posted-m]
   (and
     (or (empty? ks) (every? (fn [k] (some #(= k %) (:keywords b))) ks))
+    (or (empty? fylker) (every? (fn [k] (some #(= k %) (:fylker b))) fylker))
     (or
       (= search "!")
       (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:business_names b))
-      (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:daughter_companies b))
+
       )
     (<= posted-l (:ads_posted b))
     (or (zero? posted-m) (>= posted-m (:ads_posted b)))
     )
   )
 
-(defn businesses [ks search posted-l posted-m to-take to-drop business-type]
-  (drop to-drop (take to-take (filter #(filter-business % ks search posted-l posted-m) (if business-type BUSINESSES FIRMS)))))
+(defn businesses [ks fylker search posted-l posted-m to-take to-drop business-type]
+  (drop to-drop (take to-take (filter #(filter-business % ks fylker search posted-l posted-m) (if business-type BUSINESSES FIRMS)))))
 
 
 
@@ -63,12 +65,13 @@
 
 
 (defroutes app
-           (GET "/businesses/:keywords/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords search posted-l posted-m to-take to-drop business-type :as req]
+           (GET "/businesses/:keywords/:fylker/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords fylker search posted-l posted-m to-take to-drop business-type :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str
                          (businesses
                            (split-params keywords)
+                           (split-params fylker)
                            search
                            (Integer/parseInt posted-l)
                            (Integer/parseInt posted-m)
@@ -79,6 +82,10 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str (max-posted))})
+           (GET "/fylker/" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str FYLKER)})
            (GET "/keywords/:ks" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
