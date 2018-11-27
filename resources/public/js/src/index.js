@@ -36,13 +36,14 @@ async function getKeywordStats(keys) {
     return await $.get(`/keywords/!${keys}`);
 }
 
-async function getBusinesses(keywords, fylker, search, postedMin, postedMax, take, drop, groupCompanies) {
+async function getBusinesses(keywords, fylker, kommuner, search, postedMin, postedMax, take, drop, groupCompanies) {
     search = search === "" ? "!" : search;
     keywords = keywords === "" ? "!" : keywords;
     fylker = fylker === "" ? "!" : fylker;
+    kommuner = kommuner === "" ? "!" : kommuner;
     postedMax = isNaN(postedMax) ? 0 : postedMax;
     postedMin = isNaN(postedMin) ? 0 : postedMin;
-    return await $.get(`/businesses/${keywords}/${fylker}/${search}/${postedMin}/${postedMax}/${take}/${drop}/${groupCompanies}/`);
+    return await $.get(`/businesses/${keywords}/${fylker}/${kommuner}/${search}/${postedMin}/${postedMax}/${take}/${drop}/${groupCompanies}/`);
 }
 
 
@@ -59,6 +60,7 @@ var app = new Vue({
             bp: {
                 loaded: [],
                 fylker: [],
+                kommuner: [],
                 keywords: [],
                 postedMin: 0,
                 postedMax: 3000,
@@ -95,13 +97,12 @@ var app = new Vue({
         computed: {
             isMobile: function () {
                 return window.innerWidth < 768;
+            },
+            kommuner: function () {
+                return [...new Set(this.bp.loaded.slice().map(e=>e.kommuner).reduce((a,b)=>a.concat(b),[]).sort())];
             }
         },
         watch: {
-            'bp.fylker': function () {
-                console.log(this.bp.fylker)
-                this.updateBusinesses(true);
-            },
             selectedKeys() {
                 this.updateLineChart();
             },
@@ -190,6 +191,7 @@ var app = new Vue({
                     && this.bp.postedMax === this.bp.lastSearch.postedMax
                     && this.bp.keywords.join(",") === this.bp.lastSearch.keywords.join(",")
                     && this.bp.fylker.join(",") === this.bp.lastSearch.fylker.join(",")
+                    && this.bp.kommuner.join(",") === this.bp.lastSearch.kommuner.join(",")
                     && this.bp.search === this.bp.lastSearch.search
                     && this.bp.groupCompanies === this.bp.lastSearch.groupCompanies)) {
                     this.bp.lastSearch = {
@@ -198,7 +200,8 @@ var app = new Vue({
                         postedMax: this.bp.postedMax,
                         keywords: this.bp.keywords.slice(),
                         groupCompanies: this.bp.groupCompanies,
-                        fylker: this.bp.fylker.slice()
+                        fylker: this.bp.fylker.slice(),
+                        kommuner: this.bp.kommuner.slice()
                     };
                     if (clear) {
                         this.bp.loaded = [];
@@ -207,6 +210,7 @@ var app = new Vue({
                     this.bp.noResult = false;
                     getBusinesses(this.bp.keywords.join("!"),
                         this.bp.fylker.join("!"),
+                        this.bp.kommuner.join("!"),
                         this.bp.search,
                         this.bp.postedMin,
                         this.bp.postedMax,

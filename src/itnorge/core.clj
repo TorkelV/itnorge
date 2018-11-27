@@ -31,10 +31,11 @@
 (defn max-posted []
   (apply max (map :ads_posted BUSINESSES)))
 
-(defn filter-business [b ks fylker search posted-l posted-m]
+(defn filter-business [b ks fylker kommuner search posted-l posted-m]
   (and
     (or (empty? ks) (every? (fn [k] (some #(= k %) (:keywords b))) ks))
     (or (empty? fylker) (every? (fn [k] (some #(= k %) (:fylker b))) fylker))
+    (or (empty? kommuner) (every? (fn [k] (some #(= k %) (:kommuner b))) kommuner))
     (or
       (= search "!")
       (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:business_names b))
@@ -45,8 +46,8 @@
     )
   )
 
-(defn businesses [ks fylker search posted-l posted-m to-take to-drop business-type]
-  (drop to-drop (take to-take (filter #(filter-business % ks fylker search posted-l posted-m) (if business-type BUSINESSES FIRMS)))))
+(defn businesses [ks fylker kommuner search posted-l posted-m to-take to-drop business-type]
+  (drop to-drop (take to-take (filter #(filter-business % ks fylker kommuner search posted-l posted-m) (if business-type BUSINESSES FIRMS)))))
 
 
 
@@ -65,13 +66,14 @@
 
 
 (defroutes app
-           (GET "/businesses/:keywords/:fylker/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords fylker search posted-l posted-m to-take to-drop business-type :as req]
+           (GET "/businesses/:keywords/:fylker/:kommuner/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords fylker kommuner search posted-l posted-m to-take to-drop business-type :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str
                          (businesses
                            (split-params keywords)
                            (split-params fylker)
+                           (split-params kommuner)
                            search
                            (Integer/parseInt posted-l)
                            (Integer/parseInt posted-m)

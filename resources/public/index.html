@@ -128,6 +128,9 @@
                         <div>
                             <v-select placeholder="Fylke" multiple v-on:input="updateBusinesses(true)" v-model="bp.fylker" :options="fylker"></v-select>
                         </div>
+                        <div v-if="bp.fylker.length">
+                            <v-select placeholder="Kommune" multiple v-on:input="updateBusinesses(true)" v-model="bp.kommuner" :options="kommuner"></v-select>
+                        </div>
                     </div>
                 </div>
                 <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
