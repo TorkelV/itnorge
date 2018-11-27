@@ -132,6 +132,24 @@ body{
     transform: scale(1.05);
 }
 
+.v-select .selected-tag{
+    background-color: #45494A !important;
+    border: 1px solid #646464 !important;
+}
+
+
+.v-select {
+    font-size: 15px !important;
+}
+.v-select .form-control::placeholder{
+    font-size: 13px !important;
+}
+
+
+.v-select .open-indicator::before {
+    border-color: #F8F8F8 !important;
+}
+
 .keyword input[type='checkbox']{
     position: absolute;
     clip: rect(0 0 0 0);

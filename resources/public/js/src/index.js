@@ -8,7 +8,9 @@ import Chart from 'chart.js'
 import VTooltip from 'v-tooltip'
 import PrettyCheck from 'pretty-checkbox-vue/check';
 import PrettyRadio from 'pretty-checkbox-vue/radio';
+import vSelect from 'vue-select'
 
+Vue.component('v-select', vSelect);
 Vue.component('p-radio', PrettyRadio);
 Vue.component('p-check', PrettyCheck);
 Vue.use(VTooltip);
@@ -16,6 +18,10 @@ Vue.use(VueChartkick, {adapter: Chart});
 
 async function getKeywords() {
     return await $.get(`/keywordsplain/`);
+}
+
+async function getFylker() {
+    return await $.get(`/fylker/`);
 }
 
 async function getLineChartKeywords(val, keys, all) {
@@ -30,12 +36,13 @@ async function getKeywordStats(keys) {
     return await $.get(`/keywords/!${keys}`);
 }
 
-async function getBusinesses(keywords, search, postedMin, postedMax, take, drop, groupCompanies) {
+async function getBusinesses(keywords, fylker, search, postedMin, postedMax, take, drop, groupCompanies) {
     search = search === "" ? "!" : search;
     keywords = keywords === "" ? "!" : keywords;
+    fylker = fylker === "" ? "!" : fylker;
     postedMax = isNaN(postedMax) ? 0 : postedMax;
     postedMin = isNaN(postedMin) ? 0 : postedMin;
-    return await $.get(`/businesses/${keywords}/${search}/${postedMin}/${postedMax}/${take}/${drop}/${groupCompanies}/`);
+    return await $.get(`/businesses/${keywords}/${fylker}/${search}/${postedMin}/${postedMax}/${take}/${drop}/${groupCompanies}/`);
 }
 
 
@@ -48,8 +55,10 @@ var app = new Vue({
             keywordsPlain: [],
             loading: false,
             minimize: false,
+            fylker: [],
             bp: {
                 loaded: [],
+                fylker: [],
                 keywords: [],
                 postedMin: 0,
                 postedMax: 3000,
@@ -82,36 +91,6 @@ var app = new Vue({
                     {label: "Antall", value: "freq", axisTitle: "Antall", suffix: ""}
                 ]
             },
-            sliderProps: {
-                lazy: true,
-                width: "200px",
-                "tooltip-dir": ["bottom", "bottom"],
-                height: 8,
-                dotSize: 16,
-                min: 0,
-                max: 10000000,
-                disabled: false,
-                show: true,
-                useKeyboard: true,
-                tooltip: "always",
-                enableCross: false,
-                bgStyle: {
-                    "backgroundColor":
-                        "#fff",
-                    "boxShadow":
-                        "inset 0.5px 0.5px 3px 1px rgba(0,0,0,.36)"
-                },
-                tooltipStyle: {
-                    "backgroundColor":
-                        "#666",
-                    "borderColor":
-                        "#666"
-                },
-                processStyle: {
-                    "backgroundColor":
-                        "#999"
-                }
-            }
         },
         computed: {
             isMobile: function () {
@@ -119,6 +98,10 @@ var app = new Vue({
             }
         },
         watch: {
+            'bp.fylker': function () {
+                console.log(this.bp.fylker)
+                this.updateBusinesses(true);
+            },
             selectedKeys() {
                 this.updateLineChart();
             },
@@ -156,23 +139,25 @@ var app = new Vue({
                         !this.lineChartOptions.onlyKeyedAds.value
                     ).then(e => this.loadedKeywords = e.concat(prevKeywords));
                 }
-            }
-            ,
+            },
             bottomScrollHandler() {
                 this.onBottomOfPage = this.bottomVisible();
             },
-            init () {
-              if(this.page !== "businesses"){
-                  window.removeEventListener('scroll', this.bottomScrollHandler);
-              }
-              getKeywords().then(e => this.keywordsPlain = e);
+            init() {
+                if (this.page !== "businesses") {
+                    window.removeEventListener('scroll', this.bottomScrollHandler);
+                }
+                getKeywords().then(e => this.keywordsPlain = e);
             },
-            initFront(){
-              this.page = "front";
+            initFront() {
+                this.page = "front";
 
             },
             initBusinesses() {
                 this.page = "businesses";
+                getFylker().then(e => {
+                    this.fylker = e;
+                });
                 getMaxPosted().then(e => {
                     this.bp.postedMax = e;
                     this.updateBusinesses(true);
@@ -204,6 +189,7 @@ var app = new Vue({
                     && this.bp.postedMin === this.bp.lastSearch.postedMin
                     && this.bp.postedMax === this.bp.lastSearch.postedMax
                     && this.bp.keywords.join(",") === this.bp.lastSearch.keywords.join(",")
+                    && this.bp.fylker.join(",") === this.bp.lastSearch.fylker.join(",")
                     && this.bp.search === this.bp.lastSearch.search
                     && this.bp.groupCompanies === this.bp.lastSearch.groupCompanies)) {
                     this.bp.lastSearch = {
@@ -211,7 +197,8 @@ var app = new Vue({
                         postedMin: this.bp.postedMin,
                         postedMax: this.bp.postedMax,
                         keywords: this.bp.keywords.slice(),
-                        groupCompanies: this.bp.groupCompanies
+                        groupCompanies: this.bp.groupCompanies,
+                        fylker: this.bp.fylker.slice()
                     };
                     if (clear) {
                         this.bp.loaded = [];
@@ -219,6 +206,7 @@ var app = new Vue({
                     this.loading = true;
                     this.bp.noResult = false;
                     getBusinesses(this.bp.keywords.join("!"),
+                        this.bp.fylker.join("!"),
                         this.bp.search,
                         this.bp.postedMin,
                         this.bp.postedMax,
@@ -245,5 +233,4 @@ var app = new Vue({
             this.init();
             this.initFront();
         }
-    })
-;
+    });

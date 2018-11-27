@@ -125,6 +125,9 @@
                                    v-on:keydown.enter="updateBusinesses(true)"
                                    v-on:blur="updateBusinesses(true)">
                         </div>
+                        <div>
+                            <v-select placeholder="Fylke" multiple v-on:input="updateBusinesses(true)" v-model="bp.fylker" :options="fylker"></v-select>
+                        </div>
                     </div>
                 </div>
                 <div v-if="bp.keywords.length" class="pop-box keyword-group selected-keywords">
@@ -151,6 +154,8 @@
                         <h3 v-for="name in b.business_names">{{name}}</h3>
                     </div>
                     <p>Antall stillingsannonser: {{b.ads_posted}}</p>
+                    <p>Fylke: {{b.fylker.join(", ")}}</p>
+                    <p>Kommune: {{b.kommuner.join(", ")}}</p>
                     <p class="keyword" v-for="k in b.keywords">{{k}}</p>
                 </div>
                 <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
