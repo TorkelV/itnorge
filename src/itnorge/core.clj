@@ -23,6 +23,7 @@
 (def FIRMS (rj "firms"))
 (def KEYWORDSPLAIN (sort-by cstr/lower-case (rj "keywordsplain")))
 (def FYLKER (sort-by cstr/lower-case (rj "fylker")))
+(def KOMMUNER (sort-by cstr/lower-case (rj "kommuner")))
 
 (defn keywords [ks]
   (if (empty? ks) KEYWORDS
@@ -34,8 +35,8 @@
 (defn filter-business [b ks fylker kommuner search posted-l posted-m]
   (and
     (or (empty? ks) (every? (fn [k] (some #(= k %) (:keywords b))) ks))
-    (or (empty? fylker) (every? (fn [k] (some #(= k %) (:fylker b))) fylker))
-    (or (empty? kommuner) (every? (fn [k] (some #(= k %) (:kommuner b))) kommuner))
+    (or (empty? fylker) (some (fn [k] (some #(= k %) (:fylker b))) fylker))
+    (or (empty? kommuner) (some (fn [k] (some #(= k %) (:kommuner b))) kommuner))
     (or
       (= search "!")
       (some #(cstr/includes? (cstr/lower-case %) (cstr/lower-case search)) (:business_names b))
@@ -88,6 +89,10 @@
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str FYLKER)})
+           (GET "/kommuner/" [ks :as req]
+             {:status  200
+              :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
+              :body    (json/write-str KOMMUNER)})
            (GET "/keywords/:ks" [ks :as req]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}

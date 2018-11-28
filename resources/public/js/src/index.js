@@ -24,6 +24,10 @@ async function getFylker() {
     return await $.get(`/fylker/`);
 }
 
+async function getKommuner() {
+    return await $.get(`/kommuner/`);
+}
+
 async function getLineChartKeywords(val, keys, all) {
     return keys.length <= 1 ? [] : await $.get(`/linechart-keywords/${val}/!${keys}/${all}/`);
 }
@@ -57,6 +61,7 @@ var app = new Vue({
             loading: false,
             minimize: false,
             fylker: [],
+            kommuner: [],
             bp: {
                 loaded: [],
                 fylker: [],
@@ -98,8 +103,10 @@ var app = new Vue({
             isMobile: function () {
                 return window.innerWidth < 768;
             },
-            kommuner: function () {
-                return [...new Set(this.bp.loaded.slice().map(e=>e.kommuner).reduce((a,b)=>a.concat(b),[]).sort())];
+            cKommuner: function () {
+                console.log(this.bp.fylker)
+                console.log(this.bp.kommuner)
+                return [...new Set(this.bp.fylker.slice().map(e=>this.kommuner[e]).reduce((a,b)=>a.concat(b),[]).sort())];
             }
         },
         watch: {
@@ -156,6 +163,10 @@ var app = new Vue({
             },
             initBusinesses() {
                 this.page = "businesses";
+                getKommuner().then(e=>{
+                    //Couldn't get this to return an object in the API.. Slight hack
+                    this.kommuner = e.reduce((a,b)=>(a[b[0]]=b[1],a),{})
+                });
                 getFylker().then(e => {
                     this.fylker = e;
                 });
