@@ -77,7 +77,7 @@ var app = new Vue({
             },
             onBottomOfPage: false,
             searchKeywords: '',
-            selectedKeys: ['Java', 'SQL'],
+            selectedKeys: ['JavaScript', 'CSS'],
             loadedKeywords: [],
             lineChartOptions: {
                 library: {
