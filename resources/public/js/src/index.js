@@ -153,12 +153,10 @@ var app = new Vue({
                 this.onBottomOfPage = this.bottomVisible();
             },
             init() {
-                if (this.page !== "businesses") {
-                    window.removeEventListener('scroll', this.bottomScrollHandler);
-                }
                 getKeywords().then(e => this.keywordsPlain = e);
             },
             initFront() {
+                window.removeEventListener('scroll', this.bottomScrollHandler);
                 this.page = "front";
 
             },
@@ -179,6 +177,7 @@ var app = new Vue({
             }
             ,
             initStatistics() {
+                window.removeEventListener('scroll', this.bottomScrollHandler);
                 this.lineChartOptions.selectedDataset = this.lineChartOptions.dataset[0];
                 this.page = "statistics";
                 this.updateLineChart();
