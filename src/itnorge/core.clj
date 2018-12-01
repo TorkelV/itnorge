@@ -5,7 +5,8 @@
             [compojure.route :as route]
             [clojure.java.io :as io]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [ring.util.response :as resp]))
+            [ring.util.response :as resp]
+            [ring.middleware.params :as p]))
 
 ;;clojure.walk/keywordize-keys
 (defn keywordize-keys [m]
@@ -66,8 +67,8 @@
   (cstr/split s #"!"))
 
 
-(defroutes app
-           (GET "/businesses/:keywords/:fylker/:kommuner/:search/:posted-l/:posted-m/:to-take/:to-drop/:business-type/" [keywords fylker kommuner search posted-l posted-m to-take to-drop business-type :as req]
+(defroutes approutes
+           (POST "/businesses/" [keywords fylker kommuner search posted-l posted-m to-take to-drop business-type]
              {:status  200
               :headers {"Content-Type" "application/json" "Access-Control-Allow-Origin" "*"}
               :body    (json/write-str
@@ -120,7 +121,7 @@
 
 
 
-
+(def app (p/wrap-params approutes))
 
 
 
