@@ -233,6 +233,11 @@ body{
     display:inline-block;
 }
 
+.keyword img{
+    vertical-align: middle;
+    height:20px;
+}
+
 .main-content{
     margin-top: 50px;
 }

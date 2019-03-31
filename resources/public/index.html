@@ -159,7 +159,7 @@
                     <p class="business-info">Antall stillingsannonser: {{b.ads_posted}}</p>
                     <p class="business-info">Fylke: {{b.fylker.join(", ")}}</p>
                     <p class="business-info">Kommune: {{b.kommuner.join(", ")}}</p>
-                    <p class="keyword" v-for="k in b.keywords">{{k}}</p>
+                    <p class="keyword" v-for="k in b.keywords">{{k}} <img v-if="k in pics && pics[k]" :src="'/img/tech/'+pics[k]"/></p>
                 </div>
                 <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
                 <div class="pop-box loader" v-if="loading"><img id="loader-img" src="/img/loader.gif">
