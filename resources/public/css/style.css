@@ -9,6 +9,8 @@ h1, h2, h3{
     line-height: 2em;
 }
 
+
+
 .keyword-group .keyword:hover{
     cursor: pointer;
 }
@@ -23,8 +25,6 @@ p.business-info{
     vertical-align:top;
     float: left;
 }
-
-
 
 .main-content{
     display: inline-block;
@@ -233,6 +233,10 @@ body{
     display:inline-block;
 }
 
+.main-content{
+    margin-top: 50px;
+}
+
 nav {
     margin: 0 -15px 0 -15px;
 }
@@ -245,11 +249,15 @@ nav {
     line-height: 20px;
 }
 
-.navbar {
-    position: relative;
-    min-height: 50px;
+.navbar{
+    height: 50px;
+    z-index: 5;
+    position: fixed;
     border: 1px solid transparent;
+    width: 100%;
 }
+
+
 .navbar-nav > li {
     float: left;
 }
