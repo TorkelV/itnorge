@@ -149,14 +149,11 @@ var app = new Vue({
         updateLineChart() {
             this.loadedKeywords = this.loadedKeywords.filter(e => this.selectedKeys.includes(e.name));
             let prevKeywords = this.loadedKeywords.slice();
-            console.log(prevKeywords);
-            console.log(this.selectedKeys.filter(e => !this.loadedKeywords.some(o => o.name === e)).join("!"));
             if (this.selectedKeys.length !== 0 && this.selectedKeys.length !== this.loadedKeywords.length) {
                 getLineChartKeywords(this.lineChartOptions.selectedDataset.value,
                     this.selectedKeys.filter(e => !this.loadedKeywords.some(o => o.name === e)).join("!"),
                     !this.lineChartOptions.onlyKeyedAds.value
                 ).then(e => {
-                    console.log(e);
                     return this.loadedKeywords = e.concat(prevKeywords)
                 });
             }
