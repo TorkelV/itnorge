@@ -156,9 +156,9 @@
                     <div>
                         <h3 v-for="name in b.business_names">{{name}}</h3>
                     </div>
-                    <p>Antall stillingsannonser: {{b.ads_posted}}</p>
-                    <p>Fylke: {{b.fylker.join(", ")}}</p>
-                    <p>Kommune: {{b.kommuner.join(", ")}}</p>
+                    <p class="business-info">Antall stillingsannonser: {{b.ads_posted}}</p>
+                    <p class="business-info">Fylke: {{b.fylker.join(", ")}}</p>
+                    <p class="business-info">Kommune: {{b.kommuner.join(", ")}}</p>
                     <p class="keyword" v-for="k in b.keywords">{{k}}</p>
                 </div>
                 <div class="pop-box" v-if="bp.noResult"><p>Fant ingen selskaper med disse søkekriteriene..</p></div>
