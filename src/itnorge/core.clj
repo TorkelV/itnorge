@@ -31,6 +31,8 @@
   (if (empty? ks) KEYWORDS
                   (select-keys KEYWORDS (map keyword ks))))
 
+
+
 (defn max-posted []
   (apply max (map :ads_posted BUSINESSES)))
 
