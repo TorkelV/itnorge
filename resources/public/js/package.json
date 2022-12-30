@@ -16,13 +16,13 @@
     "vue-slider-component": "^2.8.2"
   },
   "devDependencies": {
-    "webpack": "^4.25.1",
+    "webpack": "^5.75.0",
     "babel-loader": "^8.0.4",
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "pretty-checkbox-vue": "^1.1.9",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^5.0.1"
   },
   "scripts": {
     "build-dev": "webpack  --config webpack.dev.js",
